@@ -89,6 +89,7 @@ registered = registered %>% mutate(registered = as.numeric(str_replace_all(`Tota
                       rejected = as.numeric(str_replace_all(`Total Votes Rejected`, ',', '')),
                       valid_votes = cast - rejected,
                       turnout = cast / registered,
+                      valid_turnout = valid_votes / registered,
                       pct_rejected = rejected/cast)
 
 # merge registered w/ district and province name
@@ -99,11 +100,22 @@ if(sum(is.na(registered$district)) > 0) {
 }
 
 
+# CALC VOTES PCT BY constit
+# WIN formalArgs(are there outliers of non-3 party candidates that won)
+
 # clean votes
-votes = votes %>% 
+votes =  votes %>% 
   separate(`Candidate Name`, sep = ', ', into = c('lastname', 'firstname')) %>% 
   mutate(candidate = str_to_title(paste(firstname, lastname, sep = ' ')),
-         votes = as.numeric(str_replace_all(Votes, ',', '')))
+         votes = as.numeric(str_replace_all(Votes, ',', ''))) %>% 
+  group_by(constituency) %>% 
+  mutate(pct_votes = votes / sum(votes),
+         rank = min_rank(desc(votes)),
+         won = ifelse(rank == 1, 1, 0),
+         margin_victory = ifelse(rank == 1, votes - lead(votes), NA),
+         pct_margin = ifelse(rank == 1, pct_votes - lead(pct_votes), NA))
+
+votes = votes %>% ungroup()
 
 # merge votes w/ district and province name
 
@@ -130,3 +142,9 @@ vote_check = vote_check %>%
 if(sum(vote_check$notEqual) > 0){
   warning('vote tallies do not match for some constituencies')
 }
+
+
+# export ------------------------------------------------------------------
+write.csv(registered, 'ZMB_assemblyelec2016_registration.csv')
+write.csv(votes, 'ZMB_assemblyelec2016_votes_byconstit.csv')
+
