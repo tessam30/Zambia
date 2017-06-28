@@ -113,7 +113,9 @@ votes =  votes %>%
          rank = min_rank(desc(votes)),
          won = ifelse(rank == 1, 1, 0),
          margin_victory = ifelse(rank == 1, votes - lead(votes), NA),
-         pct_margin = ifelse(rank == 1, pct_votes - lead(pct_votes), NA))
+         pct_margin = ifelse(rank == 1, pct_votes - lead(pct_votes), NA)) %>% 
+  # fill margin for the entire consituency
+  fill(contains('margin'))
 
 votes = votes %>% ungroup()
 
