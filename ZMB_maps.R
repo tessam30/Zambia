@@ -1,17 +1,30 @@
 library(geocenter)
 
-  geo = shp2df(baseDir = '~/Documents/Zambia/ElectionData/constituencies/', layerName = 'Zambia_Const_156', getCentroids = FALSE)
-
-  geo = geo %>% 
+  zmb156 = shp2df(baseDir = '~/Documents/Zambia/ElectionData/constituencies/', layerName = 'Zambia_Const_156', getCentroids = FALSE)
+  
+  zmb150 = shp2df(baseDir = '~/Documents/Zambia/ElectionData/constituencies_pre2016/', layerName = 'GRED_Zambia_2006_beta2', getCentroids = FALSE)
+  
+  
+  zmb156 = zmb156 %>% 
     mutate(constituency = str_to_title(ConstName1))
 
+  zmb150 = zmb150 %>% 
+    mutate(constituency = str_to_title(CST_N))
   
-  # merge geo
-  winners = left_join(geo, winners, by = 'constituency')
-  
-  
-  
-  
+cst156 = zmb156 %>% select(constituency, DistName1) %>% distinct()
+cst150 = zmb150 %>% select(constituency, CST_N) %>% distinct() 
+
+
+cst156_website = read.csv('~/Documents/GitHub/Zambia/processeddata/ZMB_constituencies.csv')
+# from ZMB_pres2015_clean.R
+cst150_website = pres15 %>% select(constName) %>% distinct()
+
+cst156_crosswalk = full_join(cst156, cst156_website %>% mutate(x = 'website'), by = c("constituency" = "Constituency"))
+write.csv(cst156_crosswalk, '~/Documents/GitHub/Zambia/processeddata/cst156_crosswalk.csv')
+
+
+cst150_crosswalk = full_join(cst150, cst150_website %>% mutate(x = 'website'), by = c("constituency" = "constName"))
+write.csv(cst150_crosswalk, '~/Documents/GitHub/Zambia/processeddata/cst156_crosswalk.csv')
 
 # plot --------------------------------------------------------------------
 p = ggplot(winners, aes(x = long, y = lat, fill = Party, group = group, order = order)) +
