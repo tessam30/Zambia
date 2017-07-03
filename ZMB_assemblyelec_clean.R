@@ -20,7 +20,7 @@ library(tidyr)
 
 base_url = "https://www.elections.org.zm/results/2016_national_assembly_elections/constituency/"
 
-constit = read.csv('~/Documents/Zambia/rawdata/ZMB_constituencies.csv')
+constit = read.csv('~/Documents/GitHub/Zambia/processeddata/ZMB_constituencies.csv')
 
 # convert to URLs to rvest:
 constit = constit %>% 
