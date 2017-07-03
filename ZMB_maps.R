@@ -26,13 +26,13 @@ write.csv(cst156_crosswalk, '~/Documents/GitHub/Zambia/processeddata/cst156_cros
 
 
 cst150_crosswalk = full_join(cst150, cst150_website %>% mutate(y = 'website_2015'), by = c("constituency" = "constName"))
-write.csv(cst150_crosswalk, '~/Documents/GitHub/Zambia/processeddata/cst156_crosswalk.csv')
+write.csv(cst150_crosswalk, '~/Documents/GitHub/Zambia/processeddata/cst150_crosswalk.csv')
 
 crosswalk = full_join(cst150_crosswalk, cst156_crosswalk, by = c("constituency"))
 
 crosswalk = crosswalk %>% mutate(merge_flag = ifelse(is.na(x) | is.na(y) | is.na(DistName1) | is.na(CST_N), 1, 0))
   
-write.csv(crosswalk, '~/Documents/GitHub/Zambia/processeddata/cstcrosswalk.csv')
+write.csv(crosswalk, '~/Documents/GitHub/Zambia/processeddata/cst_crosswalk.csv')
 
 
 # plot --------------------------------------------------------------------
