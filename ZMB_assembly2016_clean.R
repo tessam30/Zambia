@@ -19,6 +19,7 @@ library(tidyr)
 # Import constituencies ---------------------------------------------------
 
 base_url = "https://www.elections.org.zm/results/2016_national_assembly_elections/constituency/"
+export_dir = '~/Documents/GitHub/Zambia/processeddata/'
 
 constit = read.csv('~/Documents/GitHub/Zambia/processeddata/ZMB_constituencies.csv')
 
@@ -79,6 +80,9 @@ dists = dists %>%
          district = str_trim(str_to_title(str_replace_all(district, 'District : ', ''))),
          constituency = str_trim(str_to_title(str_replace_all(constituency, 'Constituency : ', '')))
          )
+
+# Export "official" list of constituencies with district and province names
+write.csv(dists, paste0(export_dir, 'ZMB_2016_adminnames.csv'))
 
 # swing registered long
 registered = registered %>% 
