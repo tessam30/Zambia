@@ -10,7 +10,7 @@
 # Based on: http://lightonphiri.org/blog/mapping-the-zambia-2016-presidential-election-results
 # 2) Zambia pre-2016 Constituencies from U. Michigan Constituency-Level Elections Archive
 # http://www.electiondataarchive.org/datacenter-gred.html
-# 
+# 3) Zambia district, province data from John Booz, from Ministry of Land, circa 2015.
 
 
 # setup -------------------------------------------------------------------
@@ -83,6 +83,7 @@ write.csv(crosswalk, '~/Documents/GitHub/Zambia/processeddata/cst_crosswalk.csv'
 
 # import master name list. ------------------------------------------------
 geo_base = read_excel(paste0(base_dir, 'ZMB_admin_crosswalk.xlsx'), sheet = 2)
+
 
 # merge to shpfiles
 zmb150 = left_join(zmb150, geo_base, by = c("shp2015"))
