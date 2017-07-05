@@ -1,4 +1,4 @@
-"","constituency","shp2015","website2015","shp2016","province","district","website2016","merge_flag"
+"","shp2015","constituency","website2015","shp2016","province","district","website2016","merge_flag"
 "1","Mfuwe","Mfuwe","Mfuwe","Mfuwe","Muchinga","Mpika","Mfuwe",0
 "2","Kawambwa","Kawambwa","Kawambwa","Kawambwa","Luapula","Kawambwa","Kawambwa",0
 "3","Chifunabuli","Chifunabuli","Chifunabuli","Chifunabuli","Luapula","Samfya","Chifunabuli",0
@@ -149,30 +149,30 @@
 "148","Katombola","Katombola","Katombola","Katombola","Southern","Kazungula","Katombola",0
 "149","Dundumwezi","Dundumwezi","Dundumwezi","Dundumwezi","Southern","Kalomo","Dundumwezi",0
 "150","Mbabala","Mbabala","Mbabala","Mbabala","Southern","Choma","Mbabala",0
-"151","Bwana Mkubwa",NA,"Bwana Mkubwa","Bwana Mkubwa","Copperbelt","Ndola","Bwana Mkubwa",1
-"152","Chienge",NA,"Chienge","Chienge","Luapula","Chienge","Chienge",1
-"153","Ikeleng'i",NA,"Ikeleng'i",NA,"North-Western","Ikelenge","Ikeleng'i",1
-"154","Isoka",NA,"Isoka","Isoka","Muchinga","Isoka","Isoka",1
-"155","Itezhitezhi",NA,"Itezhitezhi","Itezhitezhi","Central","Itezhitezhi","Itezhitezhi",1
-"156","Mafinga",NA,"Mafinga","Mafinga","Muchinga","Mafinga","Mafinga",1
-"157","Mpika",NA,"Mpika","Mpika","Muchinga","Mpika","Mpika",1
-"158","Mwinilunga",NA,"Mwinilunga","Mwinilunga","North-Western","Mwinilunga","Mwinilunga",1
-"159","Senanga",NA,"Senanga","Senanga","Western","Senanga","Senanga",1
-"160","Serenje",NA,"Serenje","Serenje","Central","Serenje","Serenje",1
-"161","Sesheke",NA,"Sesheke","Sesheke","Western","Sesheke","Sesheke",1
-"162","Shiwan'gandu",NA,"Shiwan'gandu",NA,"Muchinga","Shiwan'gandu","Shiwan'gandu",1
-"163","Milenge",NA,NA,"Milenge","Luapula","Milenge","Milenge",1
-"164","Ikelenge",NA,NA,"Ikelenge",NA,NA,NA,1
-"165","Shiwanga'ndu",NA,NA,"Shiwanga'ndu",NA,NA,NA,1
-"166","Sioma",NA,NA,"Sioma","Western","Sioma","Sioma",1
-"167","Chirundu",NA,NA,"Chirundu","Lusaka","Chirundu","Chirundu",1
-"168","Shang'ombo",NA,NA,"Shang'ombo",NA,NA,NA,1
-"169","Nkeyema",NA,NA,"Nkeyema","Western","Nkeyema","Nkeyema",1
-"170","Kaumbwe",NA,NA,"Kaumbwe","Eastern","Petauke","Kaumbwe",1
-"171","Lufubu",NA,NA,"Lufubu","Central","Ngabwe","Lufubu",1
-"172","Zambezi Westt",NA,NA,"Zambezi Westt",NA,NA,NA,1
-"173","Mpomgwe",NA,NA,"Mpomgwe",NA,NA,NA,1
-"174","Kabompo",NA,NA,"Kabompo","North-Western","Kabompo","Kabompo",1
-"175","Manyinga",NA,NA,"Manyinga","North-Western","Manyinga","Manyinga",1
-"176","Mitete",NA,NA,NA,"Western","Mitete","Mitete",1
-"177","Shangombo",NA,NA,NA,"Western","Shangombo","Shangombo",1
+"151",NA,"Bwana Mkubwa","Bwana Mkubwa","Bwana Mkubwa","Copperbelt","Ndola","Bwana Mkubwa",1
+"152",NA,"Chienge","Chienge","Chienge","Luapula","Chienge","Chienge",1
+"153",NA,"Ikeleng'i","Ikeleng'i",NA,"North-Western","Ikelenge","Ikeleng'i",1
+"154",NA,"Isoka","Isoka","Isoka","Muchinga","Isoka","Isoka",1
+"155",NA,"Itezhitezhi","Itezhitezhi","Itezhitezhi","Central","Itezhitezhi","Itezhitezhi",1
+"156",NA,"Mafinga","Mafinga","Mafinga","Muchinga","Mafinga","Mafinga",1
+"157",NA,"Mpika","Mpika","Mpika","Muchinga","Mpika","Mpika",1
+"158",NA,"Mwinilunga","Mwinilunga","Mwinilunga","North-Western","Mwinilunga","Mwinilunga",1
+"159",NA,"Senanga","Senanga","Senanga","Western","Senanga","Senanga",1
+"160",NA,"Serenje","Serenje","Serenje","Central","Serenje","Serenje",1
+"161",NA,"Sesheke","Sesheke","Sesheke","Western","Sesheke","Sesheke",1
+"162",NA,"Shiwan'gandu","Shiwan'gandu",NA,"Muchinga","Shiwan'gandu","Shiwan'gandu",1
+"163",NA,"Milenge",NA,"Milenge","Luapula","Milenge","Milenge",1
+"164",NA,"Ikelenge",NA,"Ikelenge",NA,NA,NA,1
+"165",NA,"Shiwanga'ndu",NA,"Shiwanga'ndu",NA,NA,NA,1
+"166",NA,"Sioma",NA,"Sioma","Western","Sioma","Sioma",1
+"167",NA,"Chirundu",NA,"Chirundu","Lusaka","Chirundu","Chirundu",1
+"168",NA,"Shang'ombo",NA,"Shang'ombo",NA,NA,NA,1
+"169",NA,"Nkeyema",NA,"Nkeyema","Western","Nkeyema","Nkeyema",1
+"170",NA,"Kaumbwe",NA,"Kaumbwe","Eastern","Petauke","Kaumbwe",1
+"171",NA,"Lufubu",NA,"Lufubu","Central","Ngabwe","Lufubu",1
+"172",NA,"Zambezi Westt",NA,"Zambezi Westt",NA,NA,NA,1
+"173",NA,"Mpomgwe",NA,"Mpomgwe",NA,NA,NA,1
+"174",NA,"Kabompo",NA,"Kabompo","North-Western","Kabompo","Kabompo",1
+"175",NA,"Manyinga",NA,"Manyinga","North-Western","Manyinga","Manyinga",1
+"176",NA,"Mitete",NA,NA,"Western","Mitete","Mitete",1
+"177",NA,"Shangombo",NA,NA,"Western","Shangombo","Shangombo",1
