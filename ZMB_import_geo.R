@@ -41,6 +41,9 @@ zmb16 = st_read(paste0(base_dir, 'geodata/constituencies/'), layer = 'Zambia_Con
 # fix "Shiwang\x92Andu" -- gives merging issues
 zmb15 = zmb15 %>% mutate(ConstName = ifelse(as.character(CST_N) %like% 'Shiwang', "Shiwang'Andu", as.character(CST_N)))
 
+# title case convert constituency name, for merging
+zmb16 = zmb16 %>% mutate(shp2016 = str_to_title(ConstName1))
+
 # re-project
 proj_str = '+proj=laea +lon_0=27.509765625'
 st_crs(zmb15)
@@ -58,4 +61,4 @@ p = ggplot(zmb16) + geom_sf()
 
 # merge crosswalk data ----------------------------------------------------
 zmb15 = left_join(zmb15, geo_base, by = c('ConstName' = "shp2015"))
-zmb16 = left_join(zmb16, geo_base, by = c('ConstName1' = "shp2016"))
+zmb16 = left_join(zmb16, geo_base, by = c('shp2016' = "shp2016"))

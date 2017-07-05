@@ -17,8 +17,9 @@ mutate(vote_pct = votes/sum(votes))
   
 pct_breaks = c(seq(-5, 15, by = 5), seq(20, 100, by = 20))
 
-vote_results = vote_results %>% 
-  mutate(vote_cat = cut(vote_pct, breaks = pct_breaks))
+vote_results = vote_results %>%
+  mutate(vote_cat = cut(vote_pct, breaks = pct_breaks),
+         party = str_to_upper(Party))
 
 vote_results = vote_results %>% left_join(parties, by = c('party' = 'pres16'))
 
