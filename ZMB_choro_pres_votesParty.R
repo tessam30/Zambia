@@ -7,6 +7,7 @@
 
 # setup -------------------------------------------------------------------
 library(tidyverse)
+library(forcats)
 
 export_dir = '~/Documents/GitHub/Zambia/exported_fromR/'
 
@@ -26,34 +27,31 @@ source('ZMB_pres_mergeAll.R')
 
 # filter just parties with larger vote counts -----------------------------------------------------------
 
+# order for plotting the parties
+party_order = c('PF', 'UPND', 'MMD')
+# , 'FDD', 'ADD', 'UNIP')
 
-
-plot_votes = function(geo_df, year) {
+plot_votes = function(geo_df, sel_year, order = party_order) {
   
   # geodata frame, complete with voting results by party/constituency merged in
   geo_df = geo_df %>%
-    filter(year == year) %>% 
+    filter(year == sel_year,
+           party %in% order) %>% 
     mutate(vote_cat = cut(pct_votes, breaks = pct_breaks)) %>% 
-    left_join(parties, by = c('party' = paste0('pres', str_sub(year, 3))))
+    left_join(parties, by = c('party' = paste0('pres', str_sub(sel_year, 3))))
   
-  
-  # order = vote_results %>% group_by(party) %>% 
-  #   summarise(tot=sum(vote_count)) %>% 
-  #   arrange(desc(tot)) %>% ungroup() %>% 
-  #   mutate(pct = tot/sum(tot))
-  # 
-  # pres$party = factor(pres$party, order$party)
+  geo_df$party = forcats::fct_relevel(geo_df$party, order)
   
   p = ggplot(geo_df, aes(fill = color, alpha = vote_cat)) +
     geom_sf(size = 0.1) +
     scale_fill_identity() +
-    facet_wrap(~party) +
+    facet_wrap(~party, ncol = 2, nrow = 2) +
     theme_void() +
     theme(legend.position = 'none')
   
   
   
-  ggsave(paste0(export_dir, 'ZMB_pres', year, '_party.pdf'))
+  ggsave(paste0(export_dir, 'ZMB_pres', sel_year, '_party.pdf'))
 }
 
 
