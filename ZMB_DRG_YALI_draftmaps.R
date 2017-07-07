@@ -6,6 +6,7 @@
 
 library(tidyverse)
 library(stringr)
+library(forcats)
 library(leaflet)
 library(sp)
 library(RColorBrewer)
@@ -41,6 +42,19 @@ leaflet(df_sub) %>%
    ggtitle("DRAFT: RLF YALI Fellow locations by track type (all years)", 
            subtitle = "Circle size corresponds to total number of fellows at location.")
  ggsave("RLF_YALI_draft.png")
+ 
+ # What is the breakdown of fellows over time (bar plot) by city
+ df %>%
+   filter(!is.na(City), Track_name != "NA", !is.na(Year)) %>% 
+   mutate(City = City %>% fct_infreq() %>% fct_rev()) %>% 
+   ggplot(aes(City, fill = Track_name)) +
+   geom_bar()+
+   coord_flip() + 
+   facet_wrap(~Year, scales = "free")
+ 
+ 
+ ggplot(df) + geom_bar(aes(City, fill = Year))
+ 
  
 
 # ---------------------------------------------------------------
