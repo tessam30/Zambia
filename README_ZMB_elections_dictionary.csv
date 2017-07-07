@@ -8,7 +8,7 @@ id,variable_name,description,available_in_constituency_breakdowns,available_in_c
 7,candidate,"candidate name (cat(first_name, last_name))",1,0
 8,first_name,First Name of the Candidate,1,0
 9,last_name,Last Name of the Candidate,1,0
-10,votes,number of valid votes for a candidate (cast - rejected),1,1
+10,vote_count,number of valid votes for a candidate (cast - rejected),1,1
 11,cast,number of votes cast for a candidate,0,1
 12,registered,number of registered voters,0,1
 13,rejected,number of votes rejected (rejected/cast),0,1
