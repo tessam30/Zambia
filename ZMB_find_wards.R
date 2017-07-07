@@ -21,8 +21,11 @@ library(rvest)
 base_dir = '~/Documents/GitHub/Zambia/'
 
 # previous lookup table: prov, dist, constit ------------------------------
-constit = read_csv( paste0(base_dir, 'processeddata/ZMB_2016_adminnames.csv')) %>% select(-X1)
-
+# constit = read_csv( paste0(base_dir, 'processeddata/ZMB_2016_adminnames.csv')) %>% select(-X1)
+crswlk = read_excel('ZMB_admin_crosswalk.xlsx', sheet = 2)
+constit = crswlk %>% 
+  filter(website2015 != 'NA') %>% 
+  select(-constituency) %>% rename(constituency = website2015)
 
 # Polling-level website ---------------------------------------------------
 
@@ -31,10 +34,10 @@ constit = read_csv( paste0(base_dir, 'processeddata/ZMB_2016_adminnames.csv')) %
 # example: https://www.elections.org.zm/results/2016_presidential_election/poll/ambidzi,chadiza
 # end is /poll/ward,district
 # base_poll_url = "https://www.elections.org.zm/results/2016_presidential_election/poll/"
-base_poll_url =  "/results/2016_presidential_election/poll/"
+base_poll_url =  "/results/2015_presidential_election/poll/"
 
 # Pull tables of wards per constituency -----------------------------------
-base_url = 'https://www.elections.org.zm/results/2016_presidential_election/constituency/'
+base_url = 'https://www.elections.org.zm/results/2015_presidential_election/constituency/'
 
 constit = constit %>% 
   mutate(url = paste0(base_url, str_to_lower(constituency)),
@@ -61,30 +64,37 @@ for (i in 1:nrow(constit)) {
   # 2) ward name / polling place like "MANO/Mano Primary School"
   
   messy_wards = html %>%
-    html_node('#districts-select') %>% 
-    html_form()
+    html_node('#districts-select') 
   
-  # pull out just the options from the form
-  messy_wards = data.frame(messy_wards$fields$`NULL`$options)
-  
-  # clean up the wards
-  
-  ward = messy_wards %>% 
-    rename(ward_url = messy_wards.fields..NULL..options) %>% 
-    mutate(ward_polling = row.names(messy_wards),
-           constituency = cons,
-           province = prov,
-           district = dist,
-           dist_fromurl = str_replace_all(ward_url, base_poll_url, '')) %>% 
-    # split ward / polling location into two columns
-    separate(ward_polling, sep = "\\/", into = c('ward', 'polling_station'), remove = FALSE) %>%
-    # split URL into ward and district
-    separate(dist_fromurl, sep = '\\,', into = c('ward_fromurl', 'dist_fromurl')) %>% 
-    mutate(ward = str_to_title(ward),
-           ward_fromurl = str_to_title(ward_fromurl),
-           dist_fromurl = str_to_title(dist_fromurl))
-  
-  wards = bind_rows(wards, ward)
+  if(!is.na(messy_wards)){
+    warning(paste0(cons, ' has no wards'))
+    messy_wards = messy_wards %>% 
+      html_form()
+    
+    
+    
+    # pull out just the options from the form
+    messy_wards = data.frame(messy_wards$fields$`NULL`$options)
+    
+    # clean up the wards
+    
+    ward = messy_wards %>% 
+      rename(ward_url = messy_wards.fields..NULL..options) %>% 
+      mutate(ward_polling = row.names(messy_wards),
+             constituency = cons,
+             province = prov,
+             district = dist,
+             dist_fromurl = str_replace_all(ward_url, base_poll_url, '')) %>% 
+      # split ward / polling location into two columns
+      separate(ward_polling, sep = "\\/", into = c('ward', 'polling_station'), remove = FALSE) %>%
+      # split URL into ward and district
+      separate(dist_fromurl, sep = '\\,', into = c('ward_fromurl', 'dist_fromurl')) %>% 
+      mutate(ward = str_to_title(ward),
+             ward_fromurl = str_to_title(ward_fromurl),
+             dist_fromurl = str_to_title(dist_fromurl))
+    
+    wards = bind_rows(wards, ward)
+  }
 }
 
 
@@ -92,8 +102,10 @@ wards = wards %>% filter(ward != "")
 
 
 # Merge with previous crosswalk -------------------------------------------
-crswlk = read_excel('ZMB_admin_crosswalk.xlsx', sheet = 2)
+# crswlk = read_excel('ZMB_admin_crosswalk.xlsx', sheet = 2)
 
-crswlk = left_join(wards, crswlk, by = c("constituency", "province", "district"))
+unique_wards = wards %>% select(province, district, dist_fromurl, constituency, ward) %>% distinct()
+
+crswlk = full_join(unique_wards, crswlk, by = c("constituency", "province", "district"))
 
 write_csv(crswlk, 'ZMB_admin_wards_crosswalk.csv')
