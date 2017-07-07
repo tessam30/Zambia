@@ -18,16 +18,20 @@ source('ZMB_pres2015_clean.R')
 # 2011 data
 source('ZMB_pres2011_clean.R')
 
-# bind together data before 2016.
-pr_votes = bind_rows(pr15, pr11)
+# bind together data
+pr_votes = bind_rows(pr16, pr15)
+pr_votes = bind_rows(pr_votes, pr11)
 
 # merge to geodata --------------------------------------------------------
 source('ZMB_import_geo.R')
 
 # 2016 data required to be merged to 2016 shapefile
-zmb16 = full_join(pr16, zmb16, by = c("constituency" = "website2016", 
+zmb16 = full_join(zmb16, pr16, by = c("website2016" = "constituency",
                                       "province" = "province", "district" = "district"))
 
 # pre-2016 data must be merged to 2015 shape file
-zmb15 = full_join(pr_votes, zmb15, by = c("constituency" = "website2015", 
-                                      "province" = "province", "district" = "district"))
+zmb11 = full_join(zmb15, pr_votes, by = c("website2011" = "constituency", 
+                                          "province" = "province", "district" = "district"))
+
+zmb15 = full_join(zmb15, pr_votes, by = c("website2015" = "constituency", 
+                                          "province" = "province", "district" = "district"))
