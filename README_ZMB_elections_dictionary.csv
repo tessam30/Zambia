@@ -21,3 +21,4 @@ id,variable_name,description,available_in_constituency_breakdowns,available_in_c
 20,pct_votes,"percent of a particular candidate compared to the constituency total (votes/sum(votes, by = constituency)",1,0
 21,margin_victory,difference between the candidate who won the constituency and his/her nearest opponent,1,0
 22,pct_margin,difference in percent of the constituency the candidate won - pct won of #2 candidate,1,0
+23,party_natl_pct,"national percentage won by a particular party (votes/sum(cast, by = party)",1,0
