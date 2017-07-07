@@ -1,54 +1,68 @@
-# ZMB_plot_2016pres
-# Plot 2016 Presidential results
+# Plot Zambian election data, by party and constituency ---------------------------------
+# In previous files, election data from Zambian elections were imported
+# cleaned, and merged.
+# This file plots choropleths 
+# Laura Hughes, lhughes@usaid.gov, USAID | GeoCenter, 7 July 2017
 
 
 # setup -------------------------------------------------------------------
-
-export_dir = '~/Documents/GitHub/Zambia/exported_fromR/'
-width = 7
-height = 7
-
 library(tidyverse)
 
+export_dir = '~/Documents/GitHub/Zambia/exported_fromR/'
 
-
-# filter just parties with larger vote counts -----------------------------------------------------------
-
-geo_df = zmb16
+width = 7
+height = 7
 
 # import colors
 parties = read_csv('~/Documents/GitHub/Zambia/party_crosswalk.csv')
 
-  
+# choropleth breaks
 pct_breaks = c(seq(-5, 15, by = 5), seq(20, 100, by = 20))/100
 
-# geodata frame, complete with voting results by party/constituency merged in
-geo_df = geo_df %>%
-  mutate(vote_cat = cut(pct_votes, breaks = pct_breaks)) %>% 
-  left_join(parties, by = c('party' = 'pres16'))
+
+# import data -------------------------------------------------------------
+source('ZMB_pres_mergeAll.R')
 
 
-order = vote_results %>% group_by(party) %>% 
-  summarise(tot=sum(vote_count)) %>% 
-  arrange(desc(tot)) %>% ungroup() %>% 
-  mutate(pct = tot/sum(tot))
-
-pres$party = factor(pres$party, order$party)
-
-p = ggplot(geo_df, aes(fill = color, alpha = vote_cat)) +
-  geom_sf(size = 0.1) +
-  scale_fill_identity() +
-  facet_wrap(~party) +
-  theme_void() +
-  theme(legend.position = 'none')
+# filter just parties with larger vote counts -----------------------------------------------------------
 
 
-ggplot(vote_results %>% filter(vote_pct > 1), aes(x = vote_pct)) +
-  geom_histogram(binwidth = 5) +
-  theme_bw()
 
-ggsave(paste0(export_dir, 'ZMB_pres2016_party.pdf'))
+plot_votes = function(geo_df, year) {
+  
+  # geodata frame, complete with voting results by party/constituency merged in
+  geo_df = geo_df %>%
+    filter(year == year) %>% 
+    mutate(vote_cat = cut(pct_votes, breaks = pct_breaks)) %>% 
+    left_join(parties, by = c('party' = paste0('pres', str_sub(year, 3))))
+  
+  
+  # order = vote_results %>% group_by(party) %>% 
+  #   summarise(tot=sum(vote_count)) %>% 
+  #   arrange(desc(tot)) %>% ungroup() %>% 
+  #   mutate(pct = tot/sum(tot))
+  # 
+  # pres$party = factor(pres$party, order$party)
+  
+  p = ggplot(geo_df, aes(fill = color, alpha = vote_cat)) +
+    geom_sf(size = 0.1) +
+    scale_fill_identity() +
+    facet_wrap(~party) +
+    theme_void() +
+    theme(legend.position = 'none')
+  
+  
+  
+  ggsave(paste0(export_dir, 'ZMB_pres', year, '_party.pdf'))
+}
 
+
+# plot for each year ------------------------------------------------------
+
+
+plot_votes(zmb16, 2016)
+plot_votes(zmb15, 2015)
+plot_votes(zmb11, 2011)
 
 # plot legend -------------------------------------------------------------
 colors = parties %>% select(party, color) %>% distinct() 
@@ -62,7 +76,7 @@ lgnd = data.frame(color = rep(colors$color, length(pct_breaks)),
   # mutate(label = ifelse(pct == -5, 0, paste0(pct, ' - ', lead(pct)))) %>% 
   filter(!is.na(vote_cat))
 
-  
+
 ggplot(lgnd, aes(x = vote_cat, y = 1, label = pct,
                  fill = color, alpha = vote_cat)) +
   geom_tile(color = '#333333', size = 0.1) +
