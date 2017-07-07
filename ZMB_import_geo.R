@@ -66,6 +66,6 @@ zmb16 = left_join(zmb16, geo_base, by = c('shp2016' = "shp2016"))
 
 
 # quick plot --------------------------------------------------------------
-plot(zmb16)
+# p1 = plot(zmb16 %>% select(province))
 
-p = ggplot(zmb16) + geom_sf(aes(fill = constituency), show.legend = FALSE) 
+p2 = ggplot(zmb16) + geom_sf(aes(fill = constituency), show.legend = FALSE)
