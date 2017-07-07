@@ -5,9 +5,11 @@
 
 library(rvest)
 library(tidyverse)
+library(readxl)
 library(stringr)
 library(stringi)
 
+base_dir = '~/Documents/GitHub/Zambia/'
 
 # Scrape Constituency-level totals ----------------------------------------
 
@@ -65,7 +67,12 @@ pr16_raw = lapply(cand_prof, votes) %>%
          margin_victory = ifelse(rank == 1, vote_count - lead(vote_count), NA),
          pct_margin = ifelse(rank == 1, pct_votes - lead(pct_votes), NA)) %>% 
   # fill margin for the entire constituency
-  fill(pct_margin, margin_victory)
+  fill(pct_margin, margin_victory)  %>% 
+  ungroup() %>% 
+  group_by(party) %>% 
+  mutate(natl_votes = sum(vote_count)) %>% 
+  ungroup() %>% 
+  mutate(party_natl_pct = natl_votes/sum(vote_count))
 
 
 
@@ -88,4 +95,4 @@ pr16 = pr16_raw %>%
   select(year, province, district, constituency, 
          party, candidate, first_name, last_name,
          vote_count, rank, won, 
-         pct_cast, pct_votes, margin_victory, pct_margin)
+         pct_cast, pct_votes, margin_victory, pct_margin, party_natl_pct)

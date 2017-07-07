@@ -1,31 +1,31 @@
 # ZMB_plot_2016pres
 # Plot 2016 Presidential results
 
+
+# setup -------------------------------------------------------------------
+
+export_dir = '~/Documents/GitHub/Zambia/exported_fromR/'
+width = 7
+height = 7
+
 library(tidyverse)
 
-# filter cutoff -----------------------------------------------------------
 
+
+# filter just parties with larger vote counts -----------------------------------------------------------
+
+geo_df = zmb16
 
 # import colors
 parties = read_csv('~/Documents/GitHub/Zambia/party_crosswalk.csv')
 
-# source('ZMB_elections._analysis.r')
-vote_results = pr11 %>% 
-  filter(!is.na(votes), total == 0) %>% 
-  group_by(constituency) %>% 
-mutate(vote_pct = votes/sum(votes))
   
-pct_breaks = c(seq(-5, 15, by = 5), seq(20, 100, by = 20))
+pct_breaks = c(seq(-5, 15, by = 5), seq(20, 100, by = 20))/100
 
-vote_results = vote_results %>%
-  mutate(vote_cat = cut(vote_pct, breaks = pct_breaks),
-         party = str_to_upper(Party))
-
-vote_results = vote_results %>% left_join(parties, by = c('party' = 'pres16'))
-
-pres = left_join(zmb16, vote_results, by = c("website2016" = 'constName'))
-
-library(RColorBrewer)
+# geodata frame, complete with voting results by party/constituency merged in
+geo_df = geo_df %>%
+  mutate(vote_cat = cut(pct_votes, breaks = pct_breaks)) %>% 
+  left_join(parties, by = c('party' = 'pres16'))
 
 
 order = vote_results %>% group_by(party) %>% 
@@ -35,7 +35,7 @@ order = vote_results %>% group_by(party) %>%
 
 pres$party = factor(pres$party, order$party)
 
-p = ggplot(pres, aes(fill = color, alpha = vote_cat)) +
+p = ggplot(geo_df, aes(fill = color, alpha = vote_cat)) +
   geom_sf(size = 0.1) +
   scale_fill_identity() +
   facet_wrap(~party) +
@@ -47,7 +47,7 @@ ggplot(vote_results %>% filter(vote_pct > 1), aes(x = vote_pct)) +
   geom_histogram(binwidth = 5) +
   theme_bw()
 
-ggsave('ZMB_pres2016_party.pdf')
+ggsave(paste0(export_dir, 'ZMB_pres2016_party.pdf'))
 
 
 # plot legend -------------------------------------------------------------

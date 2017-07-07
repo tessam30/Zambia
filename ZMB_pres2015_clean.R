@@ -47,22 +47,52 @@ votes <- function(x) {
 }
 
 # Call function and store in a new dataframe
-pres15 <- lapply(cand_prof, votes) %>% 
+pr15_raw <- lapply(cand_prof, votes) %>% 
   bind_rows() %>% 
   separate(link, c("last_name", "first_name", "Party")) %>%
-  mutate(constName = str_to_title(str_replace_all(str_trim(constName), "[\r\n]" , "")),
+  mutate(year = 2015,
+         constituency = str_to_title(str_replace_all(str_trim(constName), "[\r\n]" , "")),
          last_name = str_to_title(last_name),
          first_name = str_to_title(first_name),
          pct_cast = pct_cast/100,
-         Party = str_to_upper(Party)) %>% 
-  group_by(constName) %>% 
+         party = str_to_upper(Party)) %>% 
+  group_by(constituency) %>% 
   mutate(pct_votes = vote_count / sum(vote_count),
          rank = min_rank(desc(vote_count)),
          won = ifelse(rank == 1, 1, 0),
          margin_victory = ifelse(rank == 1, vote_count - lead(vote_count), NA),
-         pct_margin = ifelse(rank == 1, pct_votes - lead(pct_votes), NA)) %>% 
+         pct_margin = ifelse(rank == 1, pct_votes - lead(pct_votes), NA),
+         candidate = paste(first_name, last_name)) %>% 
   # fill margin for the entire consituency
-  fill(pct_margin, margin_victory)
+  fill(pct_margin, margin_victory) %>% 
+  ungroup() %>% 
+  group_by(party) %>% 
+  mutate(natl_votes = sum(vote_count)) %>% 
+  ungroup() %>% 
+  mutate(party_natl_pct = natl_votes/sum(vote_count))
+
+
+
+#http://lightonphiri.org/blog/visualising-the-zambia-2015-presidential-by-election-results
+#http://documents.worldbank.org/curated/en/766931468137977527/text/952760WP0Mappi0mbia0Report00PUBLIC0.txt
+
+
+# merge w/ lookup table ---------------------------------------------------
+# Creates a crosswalk between the shapefile names and those used on election website (with vote count)
+# Also connects the 150 constituencies from pre-2016 to the 156 afterwards.
+# Note that while the names may be the same, the boundaries have shifted and in some cases are quite different.
+
+geo_base = read_excel(paste0(base_dir, 'ZMB_admin_crosswalk.xlsx'), sheet = 2)
+
+pr15_raw = left_join(pr15_raw, geo_base, by = c("constituency" = "website2016"))
+
+# pull out just the relevant vars -----------------------------------------
+
+pr15 = pr15_raw %>% 
+  select(year, province, district, constituency, 
+         party, candidate, first_name, last_name,
+         vote_count, rank, won, 
+         pct_cast, pct_votes, margin_victory, pct_margin, party_natl_pct)
 
 
 # Also pull the stats on number rejected/cast per district ----------------
