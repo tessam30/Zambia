@@ -15,13 +15,13 @@ keep hhid hv000 hv001 hv002 hv021 hv024 hv271 hhwealth
 clonevar dhsclust = hv001
 
 * Save subset
-save "$pathout\hh_wealth_subet.dta", replace
+save "$pathout\hh_wealth_subset.dta", replace
 export delimited "$pathout\hh_wealth_subset_txt.txt", replace
 
 * Import the exported shapefile data
 import delimited "$pathout\ZMB_DHS2013_14_latlon.txt", clear 
 
 * Merge in DHS household information and export results
-merge 1:m dhsclust using "$pathout\hh_wealth_subet.dta", gen(hh_wealth_merge)
+merge 1:m dhsclust using "$pathout\hh_wealth_subset.dta", gen(hh_wealth_merge)
 export delimited "$pathout\hh_wealth_subset_geo.txt", replace
 
