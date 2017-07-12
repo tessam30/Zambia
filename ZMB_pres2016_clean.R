@@ -3,11 +3,15 @@
 # Validated and modified by Laura Hughes, lhughes@usaid.gov, USAID | GeoCenter
 # 6 July 2017
 
-library(rvest)
-library(tidyverse)
-library(readxl)
-library(stringr)
-library(stringi)
+
+# setup -------------------------------------------------------------------
+
+# taken care of in ZMB_E01_helpers.R
+# library(rvest)
+# library(tidyverse)
+# library(readxl)
+# library(stringr)
+# library(stringi)
 
 # base_dir = '~/Documents/GitHub/Zambia/'
 

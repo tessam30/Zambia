@@ -18,15 +18,15 @@
 
 # setup -------------------------------------------------------------------
 
-
-library(sf)
-library(ggplot2)
-library(dplyr)
-library(readxl)
-library(stringr)
-library(data.table)
-
-base_dir = '~/Documents/GitHub/Zambia/'
+# taken care of in ZMB_E01_helpers.R
+# library(sf)
+# library(ggplot2)
+# library(dplyr)
+# library(readxl)
+# library(stringr)
+# library(data.table)
+# 
+# base_dir = '~/Documents/GitHub/Zambia/'
 
 # import master name list. ------------------------------------------------
 # Creates a crosswalk between the shapefile names and those used on election website (with vote count)
@@ -65,7 +65,7 @@ zmb15 = left_join(zmb15, geo_base, by = c('ConstName' = "shp2015"))
 zmb16 = left_join(zmb16, geo_base, by = c('shp2016' = "shp2016"))
 
 
-# quick plot --------------------------------------------------------------
+# quick plot (example) --------------------------------------------------------------
 # p1 = plot(zmb16 %>% select(province))
 
 p2 = ggplot(zmb16) + geom_sf(aes(fill = constituency), show.legend = FALSE)

@@ -3,6 +3,19 @@
 # Laura Hughes, lhughes@usaid.gov, USAID | GeoCenter, 12 July 2017
 
 
+# load requisite packages -------------------------------------------------
+library(data.table) # version 1.10.4
+library(dplyr) # version 0.5.0
+library(tidyr) # version 0.6.3
+library(sf) # version 0.5-1
+library(ggplot2) # 2.2.1.9000 dev version -- required for sf
+library(forcats) # version 0.2.0
+library(stringr) # version 1.2.0
+library(readr) # version 1.1.1
+library(readxl) # version 1.0.0
+library(rvest) # version 0.3.2
+
+
 # convert strings to numbers ----------------------------------------------
 str2num = function(value){
   as.numeric(str_replace_all(value, ',', ''))

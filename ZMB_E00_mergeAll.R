@@ -5,7 +5,7 @@
 
 # Laura Hughes, lhughes@usaid.gov, USAID | GeoCenter, 7 July 2017
 
-
+# Set base directory for the files, outputs, source code.
 base_dir = '~/Documents/GitHub/Zambia/'
 setwd(base_dir)
 

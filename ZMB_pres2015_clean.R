@@ -4,11 +4,17 @@
 # Validated and modified by Laura Hughes, lhughes@usaid.gov, USAID | GeoCenter
 # 3 July 2017
 
-library(rvest)
-library(tidyverse)
-library(stringr)
-library(tidyr)
 
+# setup -------------------------------------------------------------------
+
+# taken care of in ZMB_E01_helpers.R
+# library(rvest)
+# library(tidyverse)
+# library(stringr)
+# library(tidyr)
+
+
+# Set up candidates -------------------------------------------------------
 
 # Url information
 cand_prof <- c("lungu,edgar,pf", "hichilema,hakainde,upnd", "nawakwi,edith,fdd", 

@@ -1,8 +1,15 @@
-library(readxl)
-library(dplyr)
-library(stringr)
-library(tidyr)
-library(tidyverse)
+# Import and clean the 2006 Zambia Presidental Election results -----------
+# At the constituency level
+# Laura Hughes, lhughes@usaid.gov, USAID | GeoCenter, 12 July 2017
+
+# setup -------------------------------------------------------------------
+# taken care of in ZMB_E01_helpers.R
+
+# library(readxl)
+# library(dplyr)
+# library(stringr)
+# library(tidyr)
+# library(tidyverse)
 
 
 # import data -------------------------------------------------------------

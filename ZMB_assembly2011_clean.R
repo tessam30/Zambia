@@ -4,13 +4,16 @@
 # Laura Hughes, lhughes@usaid.gov, USAID | GeoCenter
 # 6 July 2017
 
-library(readxl)
-library(dplyr)
-library(stringr)
-library(tidyr)
-library(readr)
 
-setwd('~/Documents/GitHub/Zambia/')
+# setup -------------------------------------------------------------------
+# taken care of in ZMB_E01_helpers.R
+# library(readxl)
+# library(dplyr)
+# library(stringr)
+# library(tidyr)
+# library(readr)
+# 
+# setwd('~/Documents/GitHub/Zambia/')
 
 # import data -------------------------------------------------------------
 # data pulled from http://www.elections.org.zm/media/28092011_2011_national_assembly_elections_results.pdf

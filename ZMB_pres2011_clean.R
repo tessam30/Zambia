@@ -3,13 +3,17 @@
 # At the constituency level
 # Laura Hughes, lhughes@usaid.gov, USAID | GeoCenter
 
-library(readxl)
-library(dplyr)
-library(stringr)
-library(tidyr)
-library(readr)
 
-base_dir = '~/Documents/GitHub/Zambia/'
+# setup -------------------------------------------------------------------
+
+# taken care of in ZMB_E01_helpers.R
+# library(readxl)
+# library(dplyr)
+# library(stringr)
+# library(tidyr)
+# library(readr)
+# 
+# base_dir = '~/Documents/GitHub/Zambia/'
 
 # goals -------------------------------------------------------------------
 # (0) Import the data
