@@ -75,7 +75,7 @@ lgnd = data.frame(color = rep(colors$color, length(pct_breaks)),
   filter(!is.na(vote_cat))
 
 
-ggplot(lgnd, aes(x = vote_cat, y = 1, label = pct,
+ggplot(lgnd, aes(x = vote_cat, y = 1, label = pct*100,
                  fill = color, alpha = vote_cat)) +
   geom_tile(color = '#333333', size = 0.1) +
   geom_text(nudge_x = 0.5, nudge_y = -0.65, vjust = 1, colour = '#333333', alpha = 1) + 
