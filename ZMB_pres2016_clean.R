@@ -9,17 +9,17 @@ library(readxl)
 library(stringr)
 library(stringi)
 
-base_dir = '~/Documents/GitHub/Zambia/'
+# base_dir = '~/Documents/GitHub/Zambia/'
 
 # Scrape Constituency-level totals ----------------------------------------
 
 # Url information
-cand_prof <- c("lungu,edgar,pf", "hichilema,hakainde,upnd", "nawakwi,edith,fdd", 
+cand_prof = c("lungu,edgar,pf", "hichilema,hakainde,upnd", "nawakwi,edith,fdd", 
                "banda,andyford,pac", "kabimba,wynter,rainbow", "chishimba,saviour,upp",
                "kaunda,tilyenji,unip", "sinkamba,peter,greens", "mwamba,maxwell,da")
 
-base_url <- c("https://www.elections.org.zm/results/2016_presidential_election/candidate/")
-url_list <- str_c(base_url, cand_prof)
+base_url = c("https://www.elections.org.zm/results/2016_presidential_election/candidate/")
+url_list = str_c(base_url, cand_prof)
 
 # Steps:
 # 1. for each name in cand_prof, append the string to the end of the base_url line
@@ -27,19 +27,19 @@ url_list <- str_c(base_url, cand_prof)
 # 3. convert the matrix to a dataframe that is reshaped into 3 vectors
 # 4. Add a new column with candidates name, add in a new columm with party
 
-votes <- function(x) {
+votes = function(x) {
   
   # specify the url + the stub of candidate
-  link <- read_html(str_c(base_url, x))
+  link = read_html(str_c(base_url, x))
   
   # use the rvest functions to extract the table
-  tmp <- link %>% 
+  tmp = link %>% 
     html_nodes("td") %>%
     html_text() %>% 
     matrix()
   
   # Reshape the dataframe into 3 columns, clean up some of the variables    
-  df <- as.data.frame(matrix(tmp, nrow = (dim(tmp)[1] / 3), byrow = TRUE)) %>% 
+  df = as.data.frame(matrix(tmp, nrow = (dim(tmp)[1] / 3), byrow = TRUE)) %>% 
     mutate(vote_count = parse_number(V2),
            pct_cast = parse_number(V3), 
            link = x, 
