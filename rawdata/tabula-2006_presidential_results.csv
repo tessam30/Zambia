@@ -1,6 +1,4 @@
-,,,,,,,% AGAINST,,% REJECTED,TOTAL,TOTAL,
-,,CONSTITUENCY,,,VOTES,% AGAINST,REGISTERED,,BALLOT,VOTES,REGISTERED,CONST.
-PROVINCE,COUNCIL,NO./NAME,CANDIDATE‰ÛªS,PARTY,REC‰ÛªD,VOTES CAST,VOTERS,REJECTED,PAPERS,CAST,VOTERS,% POLL
+prov,council,cons,candid,party,votes,pct_cast,pct_registered,rejected,pct_rejected,cast,registered,turnout
 CENTRAL,CHIBOMBO,001 Chisamba,MWANAWASA Levy,MMD,"12,492",53.71,37.56,,,,,
 ,,,HICHILEMA Hakainde,"UPND, FDD, UNIP (UDA)","7,999",34.39,24.05,,,,,
 ,,,SATA Michael M.C,PF,"1,800",7.74,5.41,,,,,
@@ -502,7 +500,7 @@ NORTHERN,CHILUBI,082 Chilubi,SATA Michael M.C,PF,"12,469",63.04,44.6,,,,,
 ,,,MIYANDA Godfrey K,HP,176,1.06,0.72,,,,,
 ,,,NGONDO Winright K,APC,103,0.62,0.42,,,,,
 ,,,,,"16,534",100,67.59,0,0,"16,534","24,462",67.59
-,CHINSALI,084 Shiwang ‰Ûªandu,SATA Michael M.C,PF,"7,721",65.11,45.27,,,,,
+,CHINSALI,084 Shiwang äó»andu,SATA Michael M.C,PF,"7,721",65.11,45.27,,,,,
 ,,,MWANAWASA Levy,MMD,"3,479",29.34,20.4,,,,,
 ,,,NGONDO Winright K,APC,257,2.17,1.51,,,,,
 ,,,HICHILEMA Hakainde,"UPND, FDD, UNIP (UDA)",246,2.07,1.44,,,,,
