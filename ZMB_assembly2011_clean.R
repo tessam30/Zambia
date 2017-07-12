@@ -13,9 +13,14 @@ library(readr)
 setwd('~/Documents/GitHub/Zambia/')
 
 # import data -------------------------------------------------------------
-! # data pulled from http://www.elections.org.zm/media/28092011_public_notice_-_2011_presidential_election_results.pdf
+# data pulled from http://www.elections.org.zm/media/28092011_2011_national_assembly_elections_results.pdf
 # on 29 June 2017
 # Extracted from pdf using Tabula (http://tabula.technology/) to begin the cleaning process
+  
+# Goal is two-fold:
+# 1) Pull the breakdown of votes by candidate / constituency
+# 2) Pull the turnout numbers by constituency
+# 3) Clean and calculate basic stats
 
 as11_raw = read_csv('rawdata/tabula-2011_national_assembly_elections_results.csv')
 
