@@ -5,7 +5,9 @@
 
 # Laura Hughes, lhughes@usaid.gov, USAID | GeoCenter, 7 July 2017
 
-setwd('~/Documents/GitHub/Zambia/')
+
+base_dir = '~/Documents/GitHub/Zambia/'
+setwd(base_dir)
 
 # combine presidential data: constituency level breakdowns -----------------------------------------------
 
