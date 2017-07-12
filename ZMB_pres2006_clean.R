@@ -2,6 +2,7 @@ library(readxl)
 library(dplyr)
 library(stringr)
 library(tidyr)
+library(tidyverse)
 
 
 # import data -------------------------------------------------------------
@@ -9,19 +10,33 @@ library(tidyr)
 # on 29 June 2017
 # Exported from Adobe Acrobat into Excel to begin the cleaning process
 
-pres06_raw = read_excel('rawdata/2006_presidential_results.xlsx', skip = 7)
+pr06_raw = read_csv('rawdata/tabula-2006_presidential_results.csv')
 
-# check if there's data in each column
-pres06_raw %>% summarise_all(funs(sum(!is.na(.))))
-t(pres06_raw %>% summarise_all(funs(length(unique(.)))))
-
-# Pull out the stats for the votes per district
-pres06 = pres06_raw %>% mutate(province = PROVINCE,
-                  district = COUNCIL, 
-                  constituency = `CONSTITUENCY NO./NAME`) %>% 
-  # back fill province/district locations
+pr06_raw = pr06_raw %>% 
+  # fill the geographic data down the rows
+  mutate(province = prov, district = council, constit = cons) %>% 
   fill(province) %>% 
   fill(district) %>% 
-  # remove "total" rows
-  filter(!is.na(PARTY)) %>% 
-  select(party = PARTY)
+  fill(constit) %>% 
+  
+  mutate(
+    # add in year
+    year = 2006,
+    # extract constiuency name
+    constituency = pretty_strings(str_replace_all(constit, '[0-9]', '')),
+    # fix vote_count
+    vote_count = str2num(votes)
+  )
+
+
+# filter out just the total turnout ---------------------------------------
+pr06 = pr06_raw %>% 
+  filter(is.na(rejected), !is.na(vote_count))
+
+
+# pull the total turnout by consituency -----------------------------------
+pr06_total = pr06_raw %>% 
+  filter(!is.na(rejected))
+
+
+
