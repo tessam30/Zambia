@@ -31,7 +31,7 @@ calc_pctVotes = function(df, group1 = 'party', group2 = 'year') {
     group_by_(group2) %>%
     mutate(pct = tot_votes / sum(tot_votes)) %>% 
     arrange(desc(pct))
-    
+  
   return(summ)
 }
 
@@ -67,8 +67,8 @@ split_candid = function(df, column = 'candid', sep = ' ') {
 
 geo_base = read_excel(paste0(base_dir, 'ZMB_admin_crosswalk.xlsx'), sheet = 2)
 
-merge_prov = function(df, merge_col) {
-  left_join(geo_base, df, by = c(merge_col = "constituency"))
+merge_geo = function(df, merge_col) {
+  left_join(geo_base, df, by = setNames(merge_col, "constituency"))
 }
 
 
@@ -78,11 +78,11 @@ calc_stats = function(df) {
   df %>%  
     group_by(constituency) %>% 
     mutate(
-    pct_votes = vote_count / sum(vote_count),
-    rank = min_rank(desc(vote_count)),
-    won = ifelse(rank == 1, 1, 0),
-    margin_victory = ifelse(rank == 1, vote_count - lead(vote_count), NA),
-    pct_margin = ifelse(rank == 1, pct_votes - lead(pct_votes), NA)) %>% 
+      pct_votes = vote_count / sum(vote_count),
+      rank = min_rank(desc(vote_count)),
+      won = ifelse(rank == 1, 1, 0),
+      margin_victory = ifelse(rank == 1, vote_count - lead(vote_count), NA),
+      pct_margin = ifelse(rank == 1, pct_votes - lead(pct_votes), NA)) %>% 
     # fill margin for the entire constituency
     fill(pct_margin, margin_victory)  %>% 
     ungroup() %>% 
@@ -101,9 +101,9 @@ calc_turnout = function(df){
            turnout = cast / registered,
            vote_count = cast - rejected,
            valid_turnout = vote_count / registered
-           )
+    )
   
-
+  
 }
 
 # merge turnout and candidate totals --------------------------------------
@@ -117,11 +117,12 @@ merge_turnout = function(candid_df, turnout_df) {
 
 # verification ------------------------------------------------------------
 # Check my calcs of turnout jibe with those on website or in pdf
-check_turnout = function(df, ndigits = 3) {
+check_turnout = function(df, ndigits = 2) {
   errors = df %>% 
     mutate(turnout_ok = round(turnout_web, ndigits) == round(turnout, ndigits),
            rejected_ok = round(pct_rejected_web, ndigits) == round(pct_rejected, ndigits)) %>% 
-    filter(turnout_ok == FALSE | rejected_ok == FALSE)
+    filter(turnout_ok == FALSE | rejected_ok == FALSE) %>% 
+    select(constituency, turnout_web, turnout, pct_rejected_web, pct_rejected)
   
   if(nrow(errors) > 0) {
     warning('Website numbers do not agree with calculation')
@@ -132,13 +133,18 @@ check_turnout = function(df, ndigits = 3) {
 # Check my calcs of pct_cast jibe with those on website or in pdf
 check_pct = function(df, ndigits = 2) {
   errors = df %>% 
-    mutate(cast_ok = round(pct_cast_web, ndigits) == round(pct_cast, ndigits),
-           registered_ok = round(pct_registered_web, ndigits) == round(pct_registered, ndigits)) %>% 
+    mutate(pct_cast_round = round(pct_cast, ndigits),
+           pct_cast_round_web = round(pct_cast_web, ndigits),
+           cast_ok = pct_cast_round_web == pct_cast_round,
+           pct_reg_round =  round(pct_registered, ndigits),
+           pct_reg_round_web = round(pct_registered_web, ndigits),
+           registered_ok = pct_reg_round_web == pct_reg_round) %>% 
     filter(cast_ok == FALSE | registered_ok == FALSE)
   
   if(nrow(errors) > 0) {
     warning('Website numbers do not agree with calculation')
-    return(errors %>% select(constituency, candidate, pct_cast_web, pct_cast, pct_registered_web, pct_registered))
+    return(errors %>% select(constituency, candidate, pct_cast_web, pct_cast, pct_cast_round_web, pct_cast_round, 
+                             pct_registered_web, pct_registered, pct_reg_round_web, pct_reg_round))
   }
 }
 
