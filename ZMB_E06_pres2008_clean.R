@@ -118,9 +118,9 @@ pr08_total = bind_rows(tot_shifted, tot_unshifted) %>%
 
 # test merge to align to lookup table -------------------------------------
 # intially trying website2006 as the base
-write.csv(full_join(geo_base %>% mutate(common = website2006), pr08 %>% select(website2008) %>% 
-                      distinct() %>% mutate(common = website2008), 
-                    by = c('common')), '2008_geonames.csv')
+# write.csv(full_join(geo_base %>% mutate(common = website2006), pr08 %>% select(website2008) %>% 
+#                       distinct() %>% mutate(common = website2008), 
+#                     by = c('common')), '2008_geonames.csv')
 
 
 # merge to province and district names ------------------------------------

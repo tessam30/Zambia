@@ -114,10 +114,7 @@ calc_turnout = function(df){
 # merge turnout and candidate totals --------------------------------------
 merge_turnout = function(candid_df, turnout_df) {
   candid_df %>% 
-    left_join(turnout_df %>% select(province, contains('district'), 
-                                    contains('website'),
-                                    contains('shp'),
-                                    contains('constituency'), cast, registered), by = 'constituency') %>% 
+    left_join(turnout_df %>% select(contains('constituency'), cast, registered), by = 'constituency') %>% 
     mutate(pct_cast = vote_count / cast,
            pct_registered = vote_count / registered)
 }

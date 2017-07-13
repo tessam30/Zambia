@@ -57,9 +57,9 @@ pr06 = pr06_raw %>%
 
 
 # for merging together; intially trying website2011 as the base
-write.csv(full_join(geo_base %>% mutate(common = website2011), pr06 %>% select(province2006 = province, district2006 = district, website2006) %>% 
-                      distinct() %>% mutate(common = website2006), 
-                     by = c('common')), '2006_geonames.csv')
+# write.csv(full_join(geo_base %>% mutate(common = website2011), pr06 %>% select(province2006 = province, district2006 = district, website2006) %>% 
+#                       distinct() %>% mutate(common = website2006), 
+#                      by = c('common')), '2006_geonames.csv')
 
 
 # pull the total turnout by consituency -----------------------------------

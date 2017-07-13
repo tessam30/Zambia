@@ -28,10 +28,10 @@
 pr11_raw = read_csv('rawdata/tabula-2011_presidential_election_results.csv')
 
 # glance at structure
-glimpse(pr11_raw)
+# glimpse(pr11_raw)
 
 # check if columns are necessary
-t(pr11_raw %>% summarise_all(funs(sum(!is.na(.)))))
+# t(pr11_raw %>% summarise_all(funs(sum(!is.na(.)))))
 
 
 
@@ -80,7 +80,7 @@ pr11_all = pr11_raw %>%
 
 # check import looks right ------------------------------------------------
 # should all have 12 
-View(pr11_all %>% count(constit_id))
+# View(pr11_all %>% count(constit_id))
 
 
 
