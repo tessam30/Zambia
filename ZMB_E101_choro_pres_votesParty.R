@@ -6,16 +6,13 @@
 
 
 # setup -------------------------------------------------------------------
-library(tidyverse)
-library(forcats)
 
-export_dir = '~/Documents/GitHub/Zambia/exported_fromR/'
 
 width = 7
 height = 7
 
 # import colors
-parties = read_csv('~/Documents/GitHub/Zambia/party_crosswalk.csv')
+parties = read_csv(paste0(base_dir, '/party_crosswalk.csv'))
 
 # choropleth breaks
 pct_breaks = c(seq(-5, 15, by = 5), seq(20, 100, by = 20))/100
@@ -52,17 +49,19 @@ plot_votes = function(geo_df, sel_year, order = party_order) {
   
   
   ggsave(paste0(export_dir, 'ZMB_pres', sel_year, '_party.pdf'))
+  
+  return(p)
 }
 
 
 # plot for each year ------------------------------------------------------
 
 
-plot_votes(zmb16, 2016)
-plot_votes(zmb15, 2015)
-plot_votes(zmb11, 2011)
-plot_votes(zmb08, 2008)
-plot_votes(zmb06, 2006)
+p16 = plot_votes(zmb16, 2016)
+p15 = plot_votes(zmb15, 2015)
+p11 = plot_votes(zmb11, 2011)
+p08 = plot_votes(zmb08, 2008)
+p06 = plot_votes(zmb06, 2006)
 
 # plot legend -------------------------------------------------------------
 colors = parties %>% select(party, color) %>% distinct() 

@@ -9,7 +9,12 @@
 
 # setup -------------------------------------------------------------------
 # Set base directory for the files, outputs, source code.
-base_dir = '~/Documents/GitHub/Zambia/'
+# base_dir = '~/Documents/GitHub/Zambia/'
+base_dir = '~/GitHub/Zambia/'
+
+
+export_dir = paste0(base_dir, 'exported_fromR/')
+
 setwd(base_dir)
 
 # helper functions, including libraries
