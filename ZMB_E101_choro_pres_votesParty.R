@@ -61,6 +61,8 @@ plot_votes = function(geo_df, sel_year, order = party_order) {
 plot_votes(zmb16, 2016)
 plot_votes(zmb15, 2015)
 plot_votes(zmb11, 2011)
+plot_votes(zmb08, 2008)
+plot_votes(zmb06, 2006)
 
 # plot legend -------------------------------------------------------------
 colors = parties %>% select(party, color) %>% distinct() 

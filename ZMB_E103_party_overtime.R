@@ -1,4 +1,3 @@
-library(forcats)
 
 maj_parties = c('PF', 'UPND', 'MMD')
 
@@ -15,10 +14,10 @@ party_order = unique(party_tot$party_grp)
 party_tot$party_grp = factor(party_tot$party_grp, levels = party_order)
 
 
-ggplot(party_tot, aes(x = year, y = pct)) +
+ggplot(party_tot, aes(x = year, y = pct, fill = party_grp)) +
   geom_area(stat = 'identity', alpha = 0.3) +
   scale_y_continuous(labels = scales::percent) + 
-  facet_wrap(~party) +
+  # facet_wrap(~party_grp) +
   theme_bw()
 
 ggplot(party_tot, aes(x = year, y = pct, fill = party_grp)) +

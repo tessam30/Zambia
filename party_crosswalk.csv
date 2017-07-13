@@ -1,19 +1,20 @@
-party,pres11,pres15,pres16,numYears,category10,color,human_color,order
-Patriotic Front,PF,PF,PF,3,1f77b4,#1f77b4,blue,1
-UPND,UPND,UPND,UPND,3,ff7f0e,#ff7f0e,orange,2
-MMD,MMD,MMD,,2,17becf,#17becf,teal,3
-FDD,FDD,FDD,FDD,3,2ca02c,#2ca02c,green,4
-ADD,ADD,,,1,7f7f7f,#7f7f7f,grey,5
-UNIP,UNIP,UNIP,UNIP,3,d62728,#d62728,red,6
-Green Party,,GREENS,GREENS,2,9467bd,#9467bd,purple,
-Heritage Party,HERITAGE,HERITAGE,,2,8c564b,#8c564b,brown,
-NAREP,NAREP,NAREP,,2,17becf,#17becf,teal,
-4R,,4R,,1,7f7f7f,#7f7f7f,grey,
-CDP,,CDP,,1,7f7f7f,#7f7f7f,grey,
-DA,,,DA,1,7f7f7f,#7f7f7f,grey,
-FDA,,FDA,,1,7f7f7f,#7f7f7f,grey,
-NMP,NMP,,,1,7f7f7f,#7f7f7f,grey,
-PAC,,,PAC,1,7f7f7f,#7f7f7f,grey,
-Rainbow Party,,,RAINBOW,1,7f7f7f,#7f7f7f,grey,
-UPP,,,UPP,1,7f7f7f,#7f7f7f,grey,
-ZAD,ZED,,,1,7f7f7f,#7f7f7f,grey,
+party,pres06,pres08,pres11,pres15,pres16,numYears,category10,color,human_color,order
+4R,,,,4R,,1,7f7f7f,#7f7f7f,grey,
+ADD,,,ADD,,,1,7f7f7f,#7f7f7f,grey,5
+CDP,,,,CDP,,1,7f7f7f,#7f7f7f,grey,
+DA,,,,,DA,1,7f7f7f,#7f7f7f,grey,
+FDA,,,,FDA,,1,7f7f7f,#7f7f7f,grey,
+FDD,,,FDD,FDD,FDD,3,2ca02c,#2ca02c,green,4
+Green Party,,,,GREENS,GREENS,2,9467bd,#9467bd,purple,
+Heritage Party,HP,HERITAGE,HERITAGE,HERITAGE,,2,8c564b,#8c564b,brown,
+MMD,MMD,MMD,MMD,MMD,,2,17becf,#17becf,teal,3
+NAREP,,,NAREP,NAREP,,2,17becf,#17becf,teal,
+NMP,,,NMP,,,1,7f7f7f,#7f7f7f,grey,
+PAC,,,,,PAC,1,7f7f7f,#7f7f7f,grey,
+Patriotic Front,PF,PF,PF,PF,PF,3,1f77b4,#1f77b4,blue,1
+Rainbow Party,,,,,RAINBOW,1,7f7f7f,#7f7f7f,grey,
+UNIP,,,UNIP,UNIP,UNIP,3,d62728,#d62728,red,6
+UPND,"UPND, FDD, UNIP (UDA)",UPND,UPND,UPND,UPND,3,ff7f0e,#ff7f0e,orange,2
+UPP,,,,,UPP,1,7f7f7f,#7f7f7f,grey,
+ZAD,,,ZED,,,1,7f7f7f,#7f7f7f,grey,
+APC,APC,,,,,1,7f7f7f,#7f7f7f,grey,
