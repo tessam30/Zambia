@@ -14,6 +14,10 @@ library(stringr) # version 1.2.0
 library(readr) # version 1.1.1
 library(readxl) # version 1.0.0
 library(rvest) # version 0.3.2
+library(RColorBrewer) # version 1.1-2
+library(extrafont) # version 0.17
+loadfonts()
+
 
 
 # convert strings to numbers ----------------------------------------------
@@ -114,7 +118,7 @@ calc_turnout = function(df){
 # merge turnout and candidate totals --------------------------------------
 merge_turnout = function(candid_df, turnout_df) {
   candid_df %>% 
-    left_join(turnout_df %>% select(contains('constituency'), cast, registered), by = 'constituency') %>% 
+    left_join(turnout_df %>% select(constituency, cast, registered), by = 'constituency') %>% 
     mutate(pct_cast = vote_count / cast,
            pct_registered = vote_count / registered)
 }
@@ -193,5 +197,37 @@ filter_turnout = function(df){
     rejected, pct_rejected,
     turnout, valid_turnout
   )
+}
+
+
+
+# choropleth function -----------------------------------------------------
+
+# main choropleth plot function -------------------------------------------
+# NOTE: can't simply facet over year and party, b/c can't join to a single shapefile.
+# Since using two different shapefiles (2015 and before, and 2016), have to run twice
+
+# Assumes values are in percent for the scale bar
+# Linear interpolation of values
+plot_choro = function(geo_df, sel_year, 
+                      fill_var,
+                      facet_var = 'year',
+                      palette = brewer.pal(9, 'Greens'),
+                      width = 12, height = 12,
+                      ncol = 1, nrow = NULL) {
+  
+  p = ggplot(geo_df, aes_string(fill = fill_var)) +
+    geom_sf(size = 0.1) +
+    scale_fill_gradientn(colours = palette, labels = scales::percent) +
+    facet_wrap(as.formula(paste("~", facet_var)), ncol = ncol, nrow = nrow) +
+    theme_void() +
+    theme(legend.position = 'bottom')
+  
+  
+  
+  ggsave(paste0(export_dir, 'ZMB_pres', sel_year, '_', fill_var, '.pdf'),
+         width = width, height = height)
+  
+  return(p)
 }
 
