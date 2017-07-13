@@ -9,8 +9,8 @@
 
 # setup -------------------------------------------------------------------
 # Set base directory for the files, outputs, source code.
-# base_dir = '~/Documents/GitHub/Zambia/'
-base_dir = '~/GitHub/Zambia/'
+base_dir = '~/Documents/GitHub/Zambia/'
+# base_dir = '~/GitHub/Zambia/'
 
 
 export_dir = paste0(base_dir, 'exported_fromR/')
@@ -37,17 +37,35 @@ source('ZMB_E06_pres2008_clean.R')
 # 2006 data
 source('ZMB_E07_pres2006_clean.R')
 
+
+# merge to colors ---------------------------------------------------------
+# import colors
+parties = read_csv(paste0(base_dir, '/party_crosswalk.csv'))
+pr06 = pr06 %>% left_join(parties, by = c('party' = 'pres2006'))
+pr08 = pr08 %>% left_join(parties, by = c('party' = 'pres2008'))
+pr11 = pr11 %>% left_join(parties, by = c('party' = 'pres2011'))
+pr15 = pr15 %>% left_join(parties, by = c('party' = 'pres2015'))
+pr16 = pr16 %>% left_join(parties, by = c('party' = 'pres2016'))
+
+
+# bind data ---------------------------------------------------------------
+
 # bind together data
-pr_votes = bind_rows(pr16, pr15)
-pr_votes = bind_rows(pr_votes, pr11)
-pr_votes = bind_rows(pr_votes, pr08)
-pr_votes = bind_rows(pr_votes, pr06)
+
+pr_votes_06_15 = bind_rows(pr15, pr11)
+pr_votes_06_15 = bind_rows(pr_votes_06_15, pr08)
+pr_votes_06_15 = bind_rows(pr_votes_06_15, pr06)
+
+pr_votes = bind_rows(pr16, pr_votes_06_15)
 
 # bind together data -- turnout numbers
-pr_turnout = bind_rows(pr16_total, pr15_total)
-pr_turnout = bind_rows(pr_turnout, pr11_total)
-pr_turnout = bind_rows(pr_turnout, pr08_total)
-pr_turnout = bind_rows(pr_turnout, pr06_total)
+
+pr_turnout_06_15 = bind_rows(pr15_total, pr11_total)
+pr_turnout_06_15 = bind_rows(pr_turnout_06_15, pr08_total)
+pr_turnout_06_15 = bind_rows(pr_turnout_06_15, pr06_total)
+pr_turnout = bind_rows(pr16_total, pr_turnout_06_16)
+
+
 
 # merge to geodata --------------------------------------------------------
 source('ZMB_E02_import_geo.R')
@@ -57,10 +75,7 @@ zmb16 = full_join(zmb16, pr16, by = c("website2016" = "constituency",
                                       "province" = "province", "district" = "district"))
 
 # pre-2016 data must be merged to 2015 shape file
-zmb11 = full_join(zmb15, pr11, by = c("website2011"))
+zmb_06_15 = full_join(zmb15, pr_votes_06_15, by = c("constituency"))
 
-zmb15 = full_join(zmb15, pr15, by = c("website2015" = "constituency"))
-zmb08 = full_join(zmb15, pr08, by = c("website2008"))
-zmb06 = full_join(zmb15, pr06, by = c("website2006"))
-
+turnout_06_15 = full_join(zmb15, pr_turnout_06_15, by = c("constituency"))
 

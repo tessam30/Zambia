@@ -7,13 +7,6 @@
 
 # setup -------------------------------------------------------------------
 
-
-width = 7
-height = 7
-
-# import colors
-parties = read_csv(paste0(base_dir, '/party_crosswalk.csv'))
-
 # choropleth breaks
 pct_breaks = c(seq(-5, 15, by = 5), seq(20, 100, by = 20))/100
 
@@ -28,27 +21,32 @@ source('ZMB_pres_mergeAll.R')
 party_order = c('PF', 'UPND', 'UPND, FDD, UNIP (UDA)', 'MMD')
 # , 'FDD', 'ADD', 'UNIP')
 
-plot_votes = function(geo_df, sel_year, order = party_order) {
+
+# main choropleth plot function -------------------------------------------
+# NOTE: can't simply facet over year and party, b/c can't join to a single shapefile.
+# Since using two different shapefiles (2015 and before, and 2016), have to run twice
+
+plot_votes = function(geo_df, sel_year, order = party_order, width = 12, height = 12) {
   
   # geodata frame, complete with voting results by party/constituency merged in
   geo_df = geo_df %>%
-    filter(year == sel_year,
-           party %in% order) %>% 
-    mutate(vote_cat = cut(pct_votes, breaks = pct_breaks)) %>% 
-    left_join(parties, by = c('party' = paste0('pres', str_sub(sel_year, 3))))
+    filter(party %in% party_order) %>% 
+    mutate(vote_cat = cut(pct_votes, breaks = pct_breaks)) 
+    # left_join(parties, by = c('party' = paste0('pres', str_sub(sel_year, 3))))
   
   geo_df$party = forcats::fct_relevel(geo_df$party, order)
   
   p = ggplot(geo_df, aes(fill = color, alpha = vote_cat)) +
     geom_sf(size = 0.1) +
     scale_fill_identity() +
-    facet_wrap(~party, ncol = 2, nrow = 2) +
+    facet_wrap(~party + year, ncol = 4) +
     theme_void() +
     theme(legend.position = 'none')
   
   
   
-  ggsave(paste0(export_dir, 'ZMB_pres', sel_year, '_party.pdf'))
+  ggsave(paste0(export_dir, 'ZMB_pres', sel_year, '_party.pdf'),
+         width = width, height = height)
   
   return(p)
 }
@@ -58,10 +56,7 @@ plot_votes = function(geo_df, sel_year, order = party_order) {
 
 
 p16 = plot_votes(zmb16, 2016)
-p15 = plot_votes(zmb15, 2015)
-p11 = plot_votes(zmb11, 2011)
-p08 = plot_votes(zmb08, 2008)
-p06 = plot_votes(zmb06, 2006)
+p06_15 = plot_votes(zmb_06_15, '2006-2015')
 
 # plot legend -------------------------------------------------------------
 colors = parties %>% select(party, color) %>% distinct() 
