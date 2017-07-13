@@ -30,7 +30,9 @@ pr06_raw = pr06_raw %>%
     # add in year
     year = 2006,
     # extract constiuency name
-    constituency = pretty_strings(str_replace_all(constit, '[0-9]', '')),
+    website2006 = pretty_strings(str_replace_all(constit, '[0-9]', '')),
+    # fix Shiwang'andu
+    website2006 = ifelse(website2006 %like% 'Shiwang', "Shiwang'andu", website2006),
     # fix vote_count
     vote_count = str2num(votes),
     # convert to pct
@@ -48,8 +50,16 @@ pr06_raw = pr06_raw %>%
 pr06 = pr06_raw %>% 
   filter(is.na(rejected), !is.na(vote_count)) %>% 
   split_candid() %>% 
-  calc_stats() %>% 
-  select(-cast, -registered)
+  select(-cast, -registered) %>% 
+  # merge w/ geo
+  left_join(geo_base %>% select(constituency, website2006), by = 'website2006') %>% 
+  calc_stats()
+
+
+# for merging together; intially trying website2011 as the base
+write.csv(full_join(geo_base %>% mutate(common = website2011), pr06 %>% select(province2006 = province, district2006 = district, website2006) %>% 
+                      distinct() %>% mutate(common = website2006), 
+                     by = c('common')), '2006_geonames.csv')
 
 
 # pull the total turnout by consituency -----------------------------------
@@ -57,9 +67,8 @@ pr06_total = pr06_raw %>%
   filter(!is.na(rejected)) %>% 
   # calculate turnout stats
   calc_turnout() %>% 
-  # merge with geo
-  # merge_geo('website2015')
-  right_join(geo_base %>% select(-province), by = c('constituency' = 'website2015'))
+  # merge w/ geo
+  left_join(geo_base %>% select(constituency, website2006), by = 'website2006')
 
 
 
