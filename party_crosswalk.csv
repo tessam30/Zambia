@@ -1,4 +1,4 @@
-party,pres06,pres08,pres11,pres15,pres16,numYears,category10,color,human_color,order
+party_name,pres2006,pres2008,pres2011,pres2015,pres2016,numYears,category10,color,human_color,order
 4R,,,,4R,,1,7f7f7f,#7f7f7f,grey,
 ADD,,,ADD,,,1,7f7f7f,#7f7f7f,grey,5
 CDP,,,,CDP,,1,7f7f7f,#7f7f7f,grey,
