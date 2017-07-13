@@ -1,5 +1,5 @@
 
-maj_parties = c('PF', 'UPND', 'MMD')
+maj_parties = c('PF', 'UPND', 'UPND, FDD, UNIP (UDA)', 'MMD')
 
 party_tot = pr_votes %>% 
   mutate(party_grp = ifelse(party %in% maj_parties, party, 'other')) %>% 
@@ -14,9 +14,10 @@ party_order = unique(party_tot$party_grp)
 party_tot$party_grp = factor(party_tot$party_grp, levels = party_order)
 
 
-ggplot(party_tot, aes(x = year, y = pct, fill = party_grp)) +
+ggplot(party_tot, aes(x = year, y = pct, fill = color)) +
   geom_area(stat = 'identity', alpha = 0.3) +
   scale_y_continuous(labels = scales::percent) + 
+  scale_fill_identity() +
   # facet_wrap(~party_grp) +
   theme_bw()
 
