@@ -68,7 +68,7 @@ pr11_all = pr11_raw %>%
   separate(candidate, into = c('last_name', 'first_name', 'middle_name'), sep = ' ') %>% 
   
   # make constit purty
-  mutate(constituency = ifelse(is.na(constit2), str_to_title(constit1),
+  mutate(website2011 = ifelse(is.na(constit2), str_to_title(constit1),
                                str_to_title(paste(constit1, constit2))),
          # make names pretty
          first_name = ifelse(isCandidate, str_trim(str_to_title(paste(first_name, middle_name))), NA),
@@ -87,13 +87,16 @@ View(pr11_all %>% count(constit_id))
 # # (1) Votes per candidate -----------------------------------------------
 pr11 = pr11_all %>% 
   filter(isCandidate == 1) %>% 
-  select(constit_id, constituency, year, 
+  select(constit_id, website2011, year, 
          candidate, first_name, last_name, party,
          vote_count, contains('pct')) %>% 
   mutate(
     # convert to number, percent
     pct_cast_web = str2pct(pct_cast_web),
     pct_registered_web = str2pct(pct_registered_web)) %>% 
+  # merge_geo
+  left_join(geo_base %>% select(constituency, province2006, district2006, website2011), by = 'website2011') %>% 
+  rename(province = province2006, district = district2006) %>% 
   calc_stats()
 
 
@@ -121,10 +124,10 @@ pr11_total = pr11_all %>%
     turnout_web = str2pct(turnout_web),
     pct_rejected_web = str2pct(pct_rejected_web)
   ) %>% 
-  calc_turnout()
-
-# merge geo
-pr11_total = pr11_total %>% right_join(geo_base, by = c('constituency' = 'website2011'))
+  calc_turnout() %>% 
+  # merge_geo
+  left_join(geo_base %>% select(constituency, province2006, district2006, website2011), by = 'website2011') %>% 
+  rename(province = province2006, district = district2006)
 
 # After check by eye, pct_rejected calc looks on target with what Zambia reports; dropping their formatted number
 # pct_poll is equivalent to turnout.
