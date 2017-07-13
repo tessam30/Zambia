@@ -53,9 +53,134 @@ pretty_strings = function(string) {
 split_candid = function(df, column = 'candid', sep = ' ') {
   df %>% 
     separate_(col = column, into = c('last_name', 'first_name', 'middle_name'), sep = sep) %>% 
-    mutate(first_name = paste(pretty_strings(first_name), pretty_strings(middle_name)),
+    mutate(first_name = ifelse(is.na(middle_name), pretty_strings(first_name),
+                               paste(pretty_strings(first_name), pretty_strings(middle_name))),
            last_name = pretty_strings(last_name),
            candidate = paste(first_name, last_name)) %>% 
     select(-middle_name)
+}
+
+# merge w/ lookup table ---------------------------------------------------
+# Creates a crosswalk between the shapefile names and those used on election website (with vote count)
+# Also connects the 150 constituencies from pre-2016 to the 156 afterwards.
+# Note that while the names may be the same, the boundaries have shifted and in some cases are quite different.
+
+geo_base = read_excel(paste0(base_dir, 'ZMB_admin_crosswalk.xlsx'), sheet = 2)
+
+merge_prov = function(df, merge_col) {
+  left_join(geo_base, df, by = c(merge_col = "constituency"))
+}
+
+
+# Calc individual election stats ------------------------------------------
+
+calc_stats = function(df) {
+  df %>%  
+    group_by(constituency) %>% 
+    mutate(
+    pct_votes = vote_count / sum(vote_count),
+    rank = min_rank(desc(vote_count)),
+    won = ifelse(rank == 1, 1, 0),
+    margin_victory = ifelse(rank == 1, vote_count - lead(vote_count), NA),
+    pct_margin = ifelse(rank == 1, pct_votes - lead(pct_votes), NA)) %>% 
+    # fill margin for the entire constituency
+    fill(pct_margin, margin_victory)  %>% 
+    ungroup() %>% 
+    group_by(party) %>% 
+    mutate(natl_votes = sum(vote_count)) %>% 
+    ungroup() %>% 
+    mutate(party_natl_pct = natl_votes/sum(vote_count))
+}
+
+
+# Calc turnout  -----------------------------------------------------------
+
+calc_turnout = function(df){
+  df %>% 
+    mutate(pct_rejected = rejected / cast,
+           turnout = cast / registered,
+           vote_count = cast - rejected,
+           valid_turnout = vote_count / registered
+           )
+  
+
+}
+
+# merge turnout and candidate totals --------------------------------------
+merge_turnout = function(candid_df, turnout_df) {
+  candid_df %>% 
+    left_join(turnout_df %>% select(province, district, constituency, cast, registered), by = 'constituency') %>% 
+    mutate(pct_cast = vote_count / cast,
+           pct_registered = vote_count / registered)
+}
+
+
+# verification ------------------------------------------------------------
+# Check my calcs of turnout jibe with those on website or in pdf
+check_turnout = function(df, ndigits = 3) {
+  errors = df %>% 
+    mutate(turnout_ok = round(turnout_web, ndigits) == round(turnout, ndigits),
+           rejected_ok = round(pct_rejected_web, ndigits) == round(pct_rejected, ndigits)) %>% 
+    filter(turnout_ok == FALSE | rejected_ok == FALSE)
+  
+  if(nrow(errors) > 0) {
+    warning('Website numbers do not agree with calculation')
+    return(errors)
+  }
+}
+
+# Check my calcs of pct_cast jibe with those on website or in pdf
+check_pct = function(df, ndigits = 2) {
+  errors = df %>% 
+    mutate(cast_ok = round(pct_cast_web, ndigits) == round(pct_cast, ndigits),
+           registered_ok = round(pct_registered_web, ndigits) == round(pct_registered, ndigits)) %>% 
+    filter(cast_ok == FALSE | registered_ok == FALSE)
+  
+  if(nrow(errors) > 0) {
+    warning('Website numbers do not agree with calculation')
+    return(errors %>% select(constituency, candidate, pct_cast_web, pct_cast, pct_registered_web, pct_registered))
+  }
+}
+
+# Check constituency totals match
+check_constit = function(candid_df, turnout_df) {
+  candid_sum = candid_df %>% 
+    ungroup() %>% 
+    group_by(constituency) %>% 
+    summarise(candid_count = sum(vote_count))
+  
+  comb = full_join(candid_sum, turnout_df, by = 'constituency') %>% 
+    mutate(tot_ok = candid_count == vote_count) %>% 
+    filter(tot_ok == FALSE)
+  
+  if(nrow(comb) > 0) {
+    warning('Candidate summary numbers and turnout do not agree')
+    return(comb)
+  }
+  
+}
+
+# Filter out just the good stuff (to standardize)
+# for the candidate totals by constituency
+filter_candid = function(df){
+  df %>% select(
+    province, contains('district'), contains('shp'), contains('constituency'),
+    year, party, candidate, first_name, last_name,
+    vote_count, cast, registered,
+    pct_cast, pct_votes, 
+    rank, won, 
+    margin_victory, pct_margin, party_natl_pct
+  )
+}
+
+# for the turnout numbers by constituency
+filter_turnout = function(df){
+  df %>% select(
+    province, contains('district'), contains('shp'), contains('constituency'),
+    year,
+    vote_count, cast, registered,
+    rejected, pct_rejected,
+    turnout, valid_turnout
+  )
 }
 

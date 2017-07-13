@@ -35,6 +35,8 @@ source('ZMB_E07_pres2006_clean.R')
 # bind together data
 pr_votes = bind_rows(pr16, pr15)
 pr_votes = bind_rows(pr_votes, pr11)
+pr_votes = bind_rows(pr_votes, pr08)
+pr_votes = bind_rows(pr_votes, pr06)
 
 # merge to geodata --------------------------------------------------------
 source('ZMB_E02_import_geo.R')
@@ -48,3 +50,5 @@ zmb11 = full_join(zmb15, pr11, by = c("website2011" = "constituency",
                                       "province" = "province", "district" = "district"))
 
 zmb15 = full_join(zmb15, pr15, by = c("website2015" = "constituency"))
+
+
