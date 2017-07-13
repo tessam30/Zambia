@@ -5,7 +5,7 @@
 
 # load requisite packages -------------------------------------------------
 library(data.table) # version 1.10.4
-library(dplyr) # version 0.5.0
+library(dplyr) # version 0.7.1
 library(tidyr) # version 0.6.3
 library(sf) # version 0.5-1
 library(ggplot2) # 2.2.1.9000 dev version -- required for sf
