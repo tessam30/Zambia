@@ -35,7 +35,7 @@ pr08_raw2 = pr08_raw %>%
   mutate(constit = ifelse(str_detect(col1, '[0-9]'), col1, NA)) %>% 
   fill(constit) %>% 
   # normalize constituency names
-  mutate(constituency = pretty_strings(str_replace_all(constit, '[0-9]', '')))
+  mutate(website2008 = pretty_strings(str_replace_all(constit, '[0-9]', '')))
 
 
 pr08_raw2 = pr08_raw2 %>% 
@@ -65,14 +65,14 @@ pr08_unshifted = pr08_raw2 %>%
                          ifelse(config == 3, col2,
                                 ifelse(config == 5, col1, NA_character_)))) %>% 
   mutate(party = col4, vote_count = str2num(col5), pct_cast_web = str2num(col6), pct_registered_web = str2num(col7)) %>% 
-  select(constituency, year, candid, party, vote_count, pct_cast_web, pct_registered_web)
+  select(website2008, year, candid, party, vote_count, pct_cast_web, pct_registered_web)
 
 pr08_shifted = pr08_raw2 %>% 
   filter(config %in% c(4,6)) %>% 
   mutate(candid = ifelse(config == 4, col2,
                          ifelse(config == 6, col1, NA_character_))) %>% 
   mutate(party = col3, vote_count = str2num(col4), pct_cast_web = str2num(col5), pct_registered_web = str2num(col6)) %>% 
-  select(constituency, year, candid, party, vote_count, pct_cast_web, pct_registered_web)
+  select(website2008, year, candid, party, vote_count, pct_cast_web, pct_registered_web)
 
 pr08 = bind_rows(pr08_shifted, pr08_unshifted)
 
@@ -85,9 +85,9 @@ pr08 = bind_rows(pr08_shifted, pr08_unshifted)
 pr08_total_raw = pr08_raw %>% 
   filter(col1 %like% 'Totals') %>% 
   # split total column into consituency name
-  separate(col1, into = c('total', 'constituency'), sep = 'Totals for') %>% 
+  separate(col1, into = c('total', 'website2008'), sep = 'Totals for') %>% 
   # a few columns have constituency shifted into the next column...
-  mutate(constituency = ifelse(constituency == '' & !is.na(col2), col2, constituency)) %>% 
+  mutate(website2008 = ifelse(website2008 == '' & !is.na(col2), col2, website2008)) %>% 
   select(-total, -col2, -col3, -col4, -col5, -col6)
 
 # split into two tables: shifted, and not
@@ -96,14 +96,14 @@ tot_shifted = pr08_total_raw %>%
   filter(is.na(col12)) %>% 
   mutate(rejected = str2num(col7), pct_rejected_web = str2num(col8), 
          cast = str2num(col9), registered = str2num(col10), turnout_web = str2num(col11)) %>% 
-  select(constituency, year, cast, registered, rejected, pct_rejected_web, turnout_web)
+  select(website2008, year, cast, registered, rejected, pct_rejected_web, turnout_web)
 
 tot_unshifted = pr08_total_raw %>% 
   # Annoyingly, there are frame shifts within the data.  Identifying them if the last column is NA
   filter(!is.na(col12)) %>% 
   mutate(rejected = str2num(col8), pct_rejected_web = str2num(col9), 
          cast = str2num(col10), registered = str2num(col11), turnout_web = str2num(col12)) %>% 
-  select(constituency, year, cast, registered, rejected, pct_rejected_web, turnout_web)
+  select(website2008, year, cast, registered, rejected, pct_rejected_web, turnout_web)
 
 # combine together and calculate values that aren't there
 pr08_total = bind_rows(tot_shifted, tot_unshifted) %>% 
@@ -112,18 +112,30 @@ pr08_total = bind_rows(tot_shifted, tot_unshifted) %>%
     pct_rejected_web = pct_rejected_web/100,
     turnout_web = turnout_web/100,
     # prettify strings
-    constituency = pretty_strings(constituency)) %>% 
+    website2008 = pretty_strings(website2008)) %>% 
   calc_turnout()
 
+
+# test merge to align to lookup table -------------------------------------
+# intially trying website2006 as the base
+write.csv(full_join(geo_base %>% mutate(common = website2006), pr08 %>% select(website2008) %>% 
+                      distinct() %>% mutate(common = website2008), 
+                    by = c('common')), '2008_geonames.csv')
+
+
 # merge to province and district names ------------------------------------
-pr08_total = left_join(geo_base, pr08_total, by = c('website2015' = "constituency"))
-  # merge_prov(pr08_total, 'website2015')
+# Assuming 2006 province/district names similar to those in 2008.
+pr08_total =   pr08_total %>% # merge w/ geo
+  left_join(geo_base %>% select(constituency, contains('2006'), website2008), by = 'website2008') %>% 
+  rename(province = province2006, district = district2006)
 
 # Verify that the numbers I calculate are (roughly) equal to those in the pdf
 check_turnout(pr08_total)
 
 # Calculate values for candidate totals by candidate ----------------------
 pr08 =  pr08 %>% 
+  left_join(geo_base %>% select(constituency, contains('2006'), website2008), by = 'website2008') %>% 
+  rename(province = province2006, district = district2006) %>% 
   split_candid() %>%
   calc_stats() %>% 
   mutate(
