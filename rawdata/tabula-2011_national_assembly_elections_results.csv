@@ -1,4 +1,4 @@
-candidate_region,Votes,pct_cast,pct_registered,rejected_ballotpapers,pct_rejected,total_votes,total_registered,pct_poll
+candidate_region,Votes,pct_cast_web,pct_registered_web,rejected_ballotpapers,pct_rejected_web,total_votes,total_registered,pct_poll
 00000001 CHISAMBA,,,,,,,,
 "MUTETEKA Moses  ,MMD","6,980",44.84%,18.13%,,,,,
 "MBOYOMA Joel  ,UPND","6,555",42.11%,17.03%,,,,,

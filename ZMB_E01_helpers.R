@@ -22,6 +22,12 @@ str2num = function(value){
 }
 
 
+# convert percents to percent ---------------------------------------------
+
+str2pct = function(value){
+  as.numeric(str_replace_all(value, '%', ''))/100
+}
+
 # summarise and calc pct of total votes -----------------------------------
 calc_pctVotes = function(df, group1 = 'party', group2 = 'year') {
   summ = df %>% 
@@ -65,7 +71,7 @@ split_candid = function(df, column = 'candid', sep = ' ') {
 # Also connects the 150 constituencies from pre-2016 to the 156 afterwards.
 # Note that while the names may be the same, the boundaries have shifted and in some cases are quite different.
 
-geo_base = read_excel(paste0(base_dir, 'ZMB_admin_crosswalk.xlsx'), sheet = 2)
+geo_base = read_excel(paste0(base_dir, 'ZMB_admin_crosswalk.xlsx'), sheet = 2, na = 'NA')
 
 merge_geo = function(df, merge_col) {
   left_join(geo_base, df, by = setNames(merge_col, "constituency"))
@@ -109,7 +115,10 @@ calc_turnout = function(df){
 # merge turnout and candidate totals --------------------------------------
 merge_turnout = function(candid_df, turnout_df) {
   candid_df %>% 
-    left_join(turnout_df %>% select(province, district, constituency, cast, registered), by = 'constituency') %>% 
+    left_join(turnout_df %>% select(province, contains('district'), 
+                                    contains('website'),
+                                    contains('shp'),
+                                    contains('constituency'), cast, registered), by = 'constituency') %>% 
     mutate(pct_cast = vote_count / cast,
            pct_registered = vote_count / registered)
 }

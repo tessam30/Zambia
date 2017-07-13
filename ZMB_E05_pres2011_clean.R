@@ -50,7 +50,7 @@ pr11_all = pr11_raw %>%
     # constituency totals have NA in the candidate regions
     total = ifelse(is.na(candidate_region), 1, 0),
     # convert votes to numeric
-    vote_count = as.numeric(str_replace_all(Votes, ',', '')),
+    vote_count = str2num(Votes),
     year = 2011,
     
     # create copy of candidate_region and a flag for if it's a candidate row
@@ -89,46 +89,17 @@ pr11 = pr11_all %>%
   filter(isCandidate == 1) %>% 
   select(constit_id, constituency, year, 
          candidate, first_name, last_name, party,
-         vote_count, contains('pct'),
-         -pct_poll, -pct_rejected) %>% 
-  group_by(constituency) %>% 
-  mutate(pct_votes = vote_count / sum(vote_count),
-         # convert to number, percent
-         pct_cast = as.numeric(str_replace_all(pct_cast, '%', ''))/100,
-         rank = min_rank(desc(vote_count)),
-         won = ifelse(rank == 1, 1, 0),
-         margin_victory = ifelse(rank == 1, vote_count - lead(vote_count), NA),
-         pct_margin = ifelse(rank == 1, pct_votes - lead(pct_votes), NA)) %>% 
-  # fill margin for the entire consituency
-  fill(pct_margin, margin_victory) %>% 
-  ungroup() %>% 
-  group_by(party) %>% 
-  mutate(natl_votes = sum(vote_count)) %>% 
-  ungroup() %>% 
-  mutate(party_natl_pct = natl_votes/sum(vote_count))
-
+         vote_count, contains('pct')) %>% 
+  mutate(
+    # convert to number, percent
+    pct_cast_web = str2pct(pct_cast_web),
+    pct_registered_web = str2pct(pct_registered_web)) %>% 
+  calc_stats()
 
 
 #http://lightonphiri.org/blog/visualising-the-zambia-2015-presidential-by-election-results
 #http://documents.worldbank.org/curated/en/766931468137977527/text/952760WP0Mappi0mbia0Report00PUBLIC0.txt
 
-
-# merge w/ lookup table ---------------------------------------------------
-# Creates a crosswalk between the shapefile names and those used on election website (with vote count)
-# Also connects the 150 constituencies from pre-2016 to the 156 afterwards.
-# Note that while the names may be the same, the boundaries have shifted and in some cases are quite different.
-
-geo_base = read_excel(paste0(base_dir, 'ZMB_admin_crosswalk.xlsx'), sheet = 2)
-
-pr11 = left_join(pr11, geo_base, by = c("constituency" = "website2011"))
-
-# pull out just the relevant vars -----------------------------------------
-
-pr11 = pr11 %>% 
-  select(year, province, district, constituency, 
-         party, candidate, first_name, last_name,
-         vote_count, rank, won, 
-         pct_cast, pct_votes, margin_victory, pct_margin, party_natl_pct)
 
 
 # (2) Voting turnout by constituency --------------------------------------
@@ -137,19 +108,43 @@ pr11 = pr11 %>%
 pr11_total = pr11_all %>% 
   filter(total == 1,
          # remove extra text taken along for the ride
-         !is.na(votes)
-         ) %>% 
-    mutate(rejected = as.numeric(str_replace_all(rejected_ballotpapers, ',', '')),
-           cast = as.numeric(str_replace_all(total_votes, ',', '')),
-           registered = as.numeric(str_replace_all(total_registered, ',', '')),
-           pct_rejected_lab = pct_rejected,
-           pct_rejected = rejected/cast,
-           turnout = cast / registered,
-           valid_turnout = votes / registered
-    )
+         !is.na(vote_count)
+  ) %>% 
+  mutate(
+    # convert to number
+    rejected = str2num(rejected_ballotpapers),
+    cast = str2num(total_votes),
+    registered = str2num(total_registered),
+    # convert to number, percent
+    pct_cast_web = str2pct(pct_cast_web),
+    pct_registered_web = str2pct(pct_registered_web),
+    turnout_web = str2pct(turnout_web),
+    pct_rejected_web = str2pct(pct_rejected_web)
+  ) %>% 
+  calc_turnout()
+
+# merge geo
+pr11_total = pr11_total %>% right_join(geo_base, by = c('constituency' = 'website2011'))
 
 # After check by eye, pct_rejected calc looks on target with what Zambia reports; dropping their formatted number
 # pct_poll is equivalent to turnout.
-  select(constit_id, constituency, year, registered, cast, votes,
-         rejected, pct_rejected, turnout, valid_turnout)
-  
+
+
+# finish pr11 calcs -------------------------------------------------------
+
+pr11 = pr11 %>% merge_turnout(pr11_total)
+
+
+# run checks --------------------------------------------------------------
+
+check_pct(pr11)
+
+check_turnout(pr11_total)
+check_constit(pr11, pr11_total)
+
+
+# cleanup -----------------------------------------------------------------
+rm(pr11_all, pr11_raw)
+
+pr11 = filter_candid(pr11)
+pr11_total = filter_turnout(pr11_total)

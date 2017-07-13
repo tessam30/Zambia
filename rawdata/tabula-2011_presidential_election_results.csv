@@ -1,4 +1,4 @@
-candidate_region,Votes,pct_cast,pct_registered,rejected_ballotpapers,pct_rejected,total_votes,total_registered,pct_poll
+candidate_region,Votes,pct_cast_web,pct_registered_web,rejected_ballotpapers,pct_rejected_web,total_votes,total_registered,turnout_web
 00000001 CHISAMBA,,,,,,,,
 "BANDA Rupiah B ,MMD","7,552",47.30%,19.62%,,,,,
 "HICHILEMA Hakainde  ,UPND","5,819",36.45%,15.11%,,,,,
