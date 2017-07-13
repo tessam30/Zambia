@@ -126,7 +126,7 @@ write.csv(full_join(geo_base %>% mutate(common = website2006), pr08 %>% select(w
 # merge to province and district names ------------------------------------
 # Assuming 2006 province/district names similar to those in 2008.
 pr08_total =   pr08_total %>% # merge w/ geo
-  left_join(geo_base %>% select(constituency, contains('2006'), website2008), by = 'website2008') %>% 
+  left_join(geo_base %>% select(constituency, district2006, province2006, website2008), by = 'website2008') %>% 
   rename(province = province2006, district = district2006)
 
 # Verify that the numbers I calculate are (roughly) equal to those in the pdf
@@ -134,7 +134,7 @@ check_turnout(pr08_total)
 
 # Calculate values for candidate totals by candidate ----------------------
 pr08 =  pr08 %>% 
-  left_join(geo_base %>% select(constituency, contains('2006'), website2008), by = 'website2008') %>% 
+  left_join(geo_base %>% select(constituency, district2006, province2006, website2008), by = 'website2008') %>% 
   rename(province = province2006, district = district2006) %>% 
   split_candid() %>%
   calc_stats() %>% 
@@ -148,6 +148,9 @@ pr08 = merge_turnout(pr08, pr08_total)
 
 # check calcs
 check_pct(pr08)
+
+# check total is equal b/w two tables
+check_constit(pr08, pr08_total)
 
 
 

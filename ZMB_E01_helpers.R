@@ -178,7 +178,7 @@ check_constit = function(candid_df, turnout_df) {
 # for the candidate totals by constituency
 filter_candid = function(df){
   df %>% select(
-    province, district, constituency,
+    province, district, constituency, contains('website'),
     year, party, candidate, first_name, last_name,
     vote_count, cast, registered,
     pct_cast, pct_votes, 
@@ -190,7 +190,7 @@ filter_candid = function(df){
 # for the turnout numbers by constituency
 filter_turnout = function(df){
   df %>% select(
-    province, district, constituency,
+    province, district, constituency, contains('website'),
     year,
     vote_count, cast, registered,
     rejected, pct_rejected,

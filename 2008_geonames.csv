@@ -13,7 +13,7 @@
 "12",12,"Central","Mumbwa","Nangoma","Nangoma","Nangoma","Nangoma","Nangoma",0,0,NA,"Nangoma","Nangoma","Central","Mumbwa","Nangoma","Nangoma","Nangoma"
 "13",13,"Central","Ngabwe","Lufubu",NA,NA,"Lufubu","Lufubu",2,1,"0",NA,NA,NA,NA,NA,NA,NA
 "14",14,"Central","Serenje","Muchinga","Muchinga","Muchinga","Muchinga","Muchinga",0,0,NA,"Muchinga","Muchinga","Central","Serenje","Muchinga","Muchinga","Muchinga"
-"15",15,"Central","Serenje","Serenje","Serenje Central","Serenje","Serenje","Serenje",2,0,"shp2015","Serenje","Serenje Central","Central","Serenje","Chama North","Serenje Central",NA
+"15",15,"Central","Serenje","Serenje","Serenje Central","Serenje","Serenje","Serenje",2,0,"shp2015","Serenje","Serenje Central","Central","Serenje","Serenje","Serenje Central",NA
 "16",16,"Copperbelt","Chililabombwe","Chililabombwe","Chililabombwe","Chililabombwe","Chililabombwe","Chililabombwe",0,0,NA,"Chililabombwe","Chililabombwe","Copperbelt","Chililabombwe","Chililabombwe","Chililabombwe","Chililabombwe"
 "17",17,"Copperbelt","Chingola","Chingola","Chingola","Chingola","Chingola","Chingola",0,0,NA,"Chingola","Chingola","Copperbelt","Chingola","Chingola","Chingola","Chingola"
 "18",18,"Copperbelt","Chingola","Nchanga","Nchanga","Nchanga","Nchanga","Nchanga",0,0,NA,"Nchanga","Nchanga","Copperbelt","Chingola","Nchanga","Nchanga","Nchanga"
@@ -155,23 +155,11 @@
 "154",154,"Western","Shangombo","Shangombo","Sinjembela","Sinjembela","Shang'ombo","Shangombo",2,0,"shp2015, website2015","Sinjembela","Sinjembela","Western","Shangombo","Sinjembela","Sinjembela","Sinjembela"
 "155",155,"Western","Sikongo","Sikongo","Sikongo","Sikongo","Sikongo","Sikongo",0,0,NA,"Sikongo","Sikongo","Western","Kalabo","Sikongo","Sikongo","Sikongo"
 "156",156,"Western","Sioma","Sioma",NA,NA,"Sioma","Sioma",2,1,"0",NA,NA,NA,NA,NA,NA,NA
-"157",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Eastern","Chama",NA,NA,NA
-"158",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Luapula","Chiengi",NA,NA,NA
-"159",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Northern","Isoka",NA,NA,NA
-"160",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Northern","Isoka",NA,NA,NA
-"161",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Southern","Itezhi-Tezhi",NA,NA,NA
-"162",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Northern","Mbala",NA,NA,NA
-"163",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"North-Western","Mwinilunga",NA,NA,NA
-"164",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"North-Western","Mwinilunga",NA,NA,NA
-"165",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Western","Senanga",NA,NA,NA
-"166",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Central","Serenje",NA,NA,NA
-"167",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Western","Sesheke",NA,NA,NA
-"168",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Northern","Chinsali",NA,NA,NA
-"169",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Bwanankubwa","Bwanankubwa"
-"170",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Chama North","Chama North"
-"171",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Chienge","Chienge"
-"172",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Serenje","Serenje"
-"173",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Mpika","Mpika"
-"174",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Itezhitezhi","Itezhitezhi"
-"175",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Senanga","Senanga"
-"176",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Sesheke","Sesheke"
+"157",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Bwanankubwa","Bwanankubwa"
+"158",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Chama North","Chama North"
+"159",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Chienge","Chienge"
+"160",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Serenje","Serenje"
+"161",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Mpika","Mpika"
+"162",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Itezhitezhi","Itezhitezhi"
+"163",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Senanga","Senanga"
+"164",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Sesheke","Sesheke"
