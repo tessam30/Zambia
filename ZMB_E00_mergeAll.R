@@ -38,6 +38,12 @@ pr_votes = bind_rows(pr_votes, pr11)
 pr_votes = bind_rows(pr_votes, pr08)
 pr_votes = bind_rows(pr_votes, pr06)
 
+# bind together data -- turnout numbers
+pr_turnout = bind_rows(pr16_total, pr15_total)
+pr_turnout = bind_rows(pr_turnout, pr11_total)
+pr_turnout = bind_rows(pr_turnout, pr08_total)
+pr_turnout = bind_rows(pr_turnout, pr06_total)
+
 # merge to geodata --------------------------------------------------------
 source('ZMB_E02_import_geo.R')
 
@@ -46,9 +52,10 @@ zmb16 = full_join(zmb16, pr16, by = c("website2016" = "constituency",
                                       "province" = "province", "district" = "district"))
 
 # pre-2016 data must be merged to 2015 shape file
-zmb11 = full_join(zmb15, pr11, by = c("website2011" = "constituency", 
-                                      "province" = "province", "district" = "district"))
+zmb11 = full_join(zmb15, pr11, by = c("website2011"))
 
 zmb15 = full_join(zmb15, pr15, by = c("website2015" = "constituency"))
+zmb08 = full_join(zmb15, pr08, by = c("website2008"))
+zmb06 = full_join(zmb15, pr06, by = c("website2006"))
 
 

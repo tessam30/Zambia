@@ -28,7 +28,7 @@ source('ZMB_pres_mergeAll.R')
 # filter just parties with larger vote counts -----------------------------------------------------------
 
 # order for plotting the parties
-party_order = c('PF', 'UPND', 'MMD')
+party_order = c('PF', 'UPND', 'UPND, FDD, UNIP (UDA)', 'MMD')
 # , 'FDD', 'ADD', 'UNIP')
 
 plot_votes = function(geo_df, sel_year, order = party_order) {
