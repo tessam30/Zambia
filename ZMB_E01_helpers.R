@@ -150,6 +150,7 @@ pull_turnout = function(base_url, region, year) {
            rejected = str2num(`Total Votes Rejected`),
            turnout_web = str2pct(Turnout),
            year = year) %>% 
+    select(-`Released on Website`) %>% 
     calc_turnout()
   
   return(turnout)
@@ -278,7 +279,7 @@ filter_candid = function(df){
 # for the turnout numbers by constituency
 filter_turnout = function(df){
   df %>% select(
-    province, district, constituency, contains('website'), -`Released on Website`,
+    province, district, constituency, contains('website'),
     year,
     vote_count, cast, registered,
     rejected, pct_rejected,

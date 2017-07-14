@@ -71,11 +71,12 @@ pr_turnout = bind_rows(pr16_total, pr_turnout_06_16)
 source('ZMB_E02_import_geo.R')
 
 # 2016 data required to be merged to 2016 shapefile
-zmb16 = full_join(zmb16, pr16, by = c("website2016" = "constituency",
-                                      "province" = "province", "district" = "district"))
+pres16 = full_join(zmb16, pr16, by = c("constituency" = "constituency", "province" = "province", "district2016" = "district"))
+
+turnout16 = full_join(zmb16, pr16_total, by = c("constituency" = "constituency", "province" = "province", "district2016" = "district"))
 
 # pre-2016 data must be merged to 2015 shape file
-zmb_06_15 = full_join(zmb15, pr_votes_06_15, by = c("constituency"))
+pres_06_15 = full_join(zmb15, pr_votes_06_15, by = c("constituency"))
 
 turnout_06_15 = full_join(zmb15, pr_turnout_06_15, by = c("constituency"))
 
