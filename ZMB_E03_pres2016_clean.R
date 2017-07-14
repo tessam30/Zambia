@@ -114,5 +114,5 @@ check_constit(pr16, pr16_total)
 
 
 # cleanup -----------------------------------------------------------------
-filter_candid(pr16)
-filter_turnout(pr16_total)
+pr16 = filter_candid(pr16)
+pr16_total = filter_turnout(pr16_total)
