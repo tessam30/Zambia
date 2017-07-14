@@ -1,7 +1,14 @@
 # Plot Zambian election data, by party and constituency ---------------------------------
 # In previous files, election data from Zambian elections were imported
 # cleaned, and merged.
-# This file plots choropleths 
+
+# This file plots 3 figures:
+# [1] choropleths of % each party won, by constituency, by year, for presidential elections
+# [2] choropleths of % each party won, by constituency, by year, for parliamentary elections
+# [3] choropleths of _which_ party won, by constituency, by year, for parliamentary elections
+# [4] legend for #1 and 2.
+
+
 # Laura Hughes, lhughes@usaid.gov, USAID | GeoCenter, 7 July 2017
 
 
@@ -31,11 +38,13 @@ party_order = c('PF', 'UPND', 'UPND, FDD, UNIP (UDA)', 'MMD')
 year_order = c(2016, 2015, 2011, 2008, 2006)
 
 
+
 # main choropleth plot function -------------------------------------------
 # NOTE: can't simply facet over year and party, b/c can't join to a single shapefile.
 # Since using two different shapefiles (2015 and before, and 2016), have to run twice
 
 plot_votes = function(geo_df, sel_year, party_tot,
+                      elec_type = 'pres',
                       pty_order = party_order, yr_order = year_order,
                       width = 12, height = 12) {
   
@@ -72,21 +81,24 @@ plot_votes = function(geo_df, sel_year, party_tot,
   
   
   
-  ggsave(paste0(export_dir, 'ZMB_pres', sel_year, '_party.pdf'),
+  ggsave(paste0(export_dir, 'ZMB_', elec_type, sel_year, '_party.pdf'),
          width = width, height = height)
   
   return(p)
 }
 
-
-# plot for each year ------------------------------------------------------
-
-
+# [1] PRESIDENTIAL DATA ---------------------------------------------------
+# plot for each year
 p16 = plot_votes(pres16, 2016, party_tot %>% filter(year == 2016))
-
 p06_15 = plot_votes(pres_06_15, '2006-2015', party_tot %>% filter(year != 2016))
 
-# plot legend -------------------------------------------------------------
+# [2] PARLIAMENTARY DATA ---------------------------------------------------
+# plot for each year
+a16 = plot_votes(parl16, 2016, parl_tot %>% filter(year == 2016), elec_type = 'parl')
+a06_15 = plot_votes(parl_06_15, '2006-2015', party_tot %>% filter(year != 2016))
+
+
+# [4] plot legend -------------------------------------------------------------
 colors = parties %>% select(party = party_name, color) %>% distinct() 
 
 lgnd = data.frame(color = rep(colors$color, length(pct_breaks)),

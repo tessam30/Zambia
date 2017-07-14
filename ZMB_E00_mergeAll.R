@@ -7,7 +7,7 @@
 
 
 # NOTES ON DATA FRAMES ----------------------------------------------------
-# Data are organized into 4 major categories:
+# Data are organized into 5 major categories:
   # 1. Presidential vote totals by candidate, by constituency (by year). Includes:
     # - prX, where X is the last 2 digits of the year, e.g. pr16.  Totals for a given year.
     # - pr_votes_06_15: combined totals for 2006-2015; used to merge to shapefile w/ 150 constituencies 
@@ -25,6 +25,15 @@
     # - asX_total, where X is the last 2 digits of the year, e.g. as16_total.  Totals for a given year.
     # - as_turnout_06_15: combined totals for 2006-2015; used to merge to shapefile w/ 150 constituencies 
     # - as_turnout: all combined data, 2006-2016. Should not be used to merge to geographic data
+  # 5. Geographic data: shapefiles of the 150 or 156 constituencies 
+    # --> zmb15 (shapefile for 2015 and before)
+# --> zmb16 (shapefile for 2016)
+# --> pres16 (shp + pr16)
+# --> parl16 (shp + as16)
+# --> turnout16 (shp + pr16_total)
+# --> pres06_15 (shp + pr_votes_06_15)
+# --> parl06_15 (shp + as_votes_06_15)
+# --> turnout_06_15 (shp + pr_votes_total_06_15)
 
 
 # setup -------------------------------------------------------------------
@@ -44,7 +53,7 @@ setwd(base_dir)
 # helper functions, including libraries
 source('ZMB_E01_helpers.R')
 
-# combine presidential data: constituency level breakdowns -----------------------------------------------
+# [1 & 2] combine presidential data: constituency level breakdowns -----------------------------------------------
 
 # 2016 data
 source('ZMB_E03_pres2016_clean.R')
@@ -91,11 +100,19 @@ pr_turnout = bind_rows(pr16_total, pr_turnout_06_15)
 
 
 
-# merge to geodata --------------------------------------------------------
+# [3 & 4] combine assembly data: constituency level breakdowns -----------------------------------------------
+
+# merge to colors ---------------------------------------------------------
+as06 = as06 %>% left_join(parties, by = c('party' = 'pres2006'))
+as11 = as11 %>% left_join(parties, by = c('party' = 'pres2011'))
+as16 = as16 %>% left_join(parties, by = c('party' = 'pres2016'))
+
+# [5] merge to geodata --------------------------------------------------------
 source('ZMB_E02_import_geo.R')
 
 # 2016 data required to be merged to 2016 shapefile
 pres16 = full_join(zmb16, pr16, by = c("constituency" = "constituency", "province" = "province", "district2016" = "district"))
+parl16 = full_join(zmb16, as16, by = c("constituency" = "constituency", "province" = "province", "district2016" = "district"))
 
 turnout16 = full_join(zmb16, pr16_total, by = c("constituency" = "constituency", "province" = "province", "district2016" = "district"))
 

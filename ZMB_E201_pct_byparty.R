@@ -11,7 +11,9 @@
 
 maj_parties = c('PF', 'UPND', 'UPND, FDD, UNIP (UDA)', 'MMD')
 
-# Presidential elections, 2006-2016.
+
+# Presidential elections, 2006-2016. --------------------------------------
+
 party_tot = pr_votes %>% 
   mutate(party_grp = ifelse(party %in% maj_parties, party, 'other')) %>% 
   group_by(party_grp, year, color) %>% 
@@ -23,3 +25,16 @@ party_tot = pr_votes %>%
   arrange(desc(total))
 
 write_csv(party_tot, paste0(data_dir, 'ZMB_presvotes_byparty.csv'))
+
+
+
+# Parliamentary elections, 2006-2016. -------------------------------------
+parl_tot = as16 %>% 
+  mutate(party_grp = ifelse(party %in% maj_parties, party, 'other')) %>% 
+  group_by(party_grp, year, party) %>% 
+  summarise(total = sum(vote_count)) %>% 
+  ungroup() %>% group_by(year) %>% 
+  mutate(pct = total/sum(total),
+         pct_lab = percent(pct, 0)) %>% 
+  arrange(desc(total))
+
