@@ -46,6 +46,8 @@ plot_votes = function(geo_df, sel_year, party_tot,
   # reorder levels
   geo_df$party = forcats::fct_relevel(geo_df$party, pty_order)
   geo_df$year = factor(geo_df$year, levels = yr_order)
+  party_tot$year = factor(party_tot$year, levels = yr_order)
+  party_tot$party = forcats::fct_relevel(party_tot$party, pty_order)
   
   p = ggplot(geo_df) +
     # -- annotations -- total pct by party, across the country
@@ -98,12 +100,23 @@ lgnd = data.frame(color = rep(colors$color, length(pct_breaks)),
 
 ggplot(lgnd, aes(x = vote_cat, y = 1, label = pct*100,
                  fill = color, alpha = vote_cat)) +
-  geom_tile(color = '#333333', size = 0.1) +
-  geom_text(nudge_x = 0.5, nudge_y = -0.65, vjust = 1, colour = '#333333', alpha = 1) + 
+  # -- scale bars: heatmap --
+  geom_tile(color = grey60K, size = 0.1) +
+  
+  # -- labels --
+  geom_text(nudge_x = 0.5, nudge_y = -0.65, vjust = 1, 
+            size = 3, colour = grey60K, alpha = 1, family = 'Lato Light') + 
+  
+  # -- scales --
   scale_y_continuous(expand = c(0.25, 0.2)) +
   scale_x_discrete(expand = c(0.05, 0.05)) +
   scale_fill_identity() +
+  
+  # -- facets --
   facet_wrap(~party, ncol = 2) +
-  theme_blank() +
-  # coord_equal() +
-  theme(legend.position = 'none')
+  
+  # -- theme -- 
+  theme_facet()
+
+
+ggsave(paste0(export_dir, 'ZMB_pres_scales.pdf'), width = 8, height = 10)
