@@ -307,14 +307,27 @@ filter_turnout = function(df){
 plot_choro = function(geo_df, sel_year, 
                       fill_var,
                       facet_var = 'year',
+                      fill_lim = NULL,
                       palette = brewer.pal(9, 'Greens'),
                       width = 12, height = 12,
                       ncol = 1, nrow = NULL) {
   
+  if(is.null(fill_lim)) {
+    fill_lim = c(min(geo_df[[fill_var]]), max(geo_df[[fill_var]]))  
+  }
+  
   p = ggplot(geo_df, aes_string(fill = fill_var)) +
+    # -- choro --
     geom_sf(size = 0.1) +
-    scale_fill_gradientn(colours = palette, labels = scales::percent) +
+    
+    # -- scales --
+    scale_fill_gradientn(colours = palette, labels = scales::percent,
+                         limits = fill_lim) +
+    
+    # -- facets --
     facet_wrap(as.formula(paste("~", facet_var)), ncol = ncol, nrow = nrow) +
+    
+    # -- themes --
     theme_void() +
     theme(legend.position = 'bottom')
   
