@@ -14,6 +14,7 @@ base_dir = '~/Documents/GitHub/Zambia/'
 
 
 export_dir = paste0(base_dir, 'exported_fromR/')
+data_dir = paste0(base_dir, 'processed_data')
 
 setwd(base_dir)
 
