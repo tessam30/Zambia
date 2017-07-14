@@ -1,13 +1,5 @@
 
-maj_parties = c('PF', 'UPND', 'UPND, FDD, UNIP (UDA)', 'MMD')
-
-party_tot = pr_votes %>% 
-  mutate(party_grp = ifelse(party %in% maj_parties, party, 'other')) %>% 
-  group_by(party_grp, year) %>% 
-  summarise(total = sum(vote_count)) %>% 
-  ungroup() %>% group_by(year) %>% 
-  mutate(pct = total/sum(total)) %>% 
-  arrange(desc(total))
+source('ZMB_E201_pct_byparty.R')
 
 party_order = unique(party_tot$party_grp)
 
