@@ -6,10 +6,33 @@
 # Laura Hughes, lhughes@usaid.gov, USAID | GeoCenter, 7 July 2017
 
 
+# NOTES ON DATA FRAMES ----------------------------------------------------
+# Data are organized into 4 major categories:
+  # 1. Presidential vote totals by candidate, by constituency (by year). Includes:
+    # - prX, where X is the last 2 digits of the year, e.g. pr16.  Totals for a given year.
+    # - pr_votes_06_15: combined totals for 2006-2015; used to merge to shapefile w/ 150 constituencies 
+    #   (in 2016, shifted to 156 constituencies to keep things interesting)
+    # - pr_votes: all combined data, 2006-2016. Should not be used to merge to geographic data
+  # 2. Presidential turnout by constituency (by year). Includes:
+    # - prX_total, where X is the last 2 digits of the year, e.g. pr16_total.  Totals for a given year.
+    # - pr_turnout_06_15: combined totals for 2006-2015; used to merge to shapefile w/ 150 constituencies 
+    # - pr_turnout: all combined data, 2006-2016. Should not be used to merge to geographic data
+  # 3. Assembly/parlimentary vote totals by candidate, by constituency (by year). Includes:
+    # - asX, where X is the last 2 digits of the year, e.g. as16.  Totals for a given year.
+    # - as_votes_06_15: combined totals for 2006-2015; used to merge to shapefile w/ 150 constituencies 
+    # - as_votes: all combined data, 2006-2016. Should not be used to merge to geographic data
+  # 4. Assembly/parlimentary turnout by constituency (by year). Includes:
+    # - asX_total, where X is the last 2 digits of the year, e.g. as16_total.  Totals for a given year.
+    # - as_turnout_06_15: combined totals for 2006-2015; used to merge to shapefile w/ 150 constituencies 
+    # - as_turnout: all combined data, 2006-2016. Should not be used to merge to geographic data
+
 
 # setup -------------------------------------------------------------------
 # Set base directory for the files, outputs, source code.
+# laura
 base_dir = '~/Documents/GitHub/Zambia/'
+
+# tim
 # base_dir = '~/GitHub/Zambia/'
 
 
