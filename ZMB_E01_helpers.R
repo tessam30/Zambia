@@ -156,6 +156,31 @@ pull_turnout = function(base_url, region, year) {
   
 }
 
+pull_dists = function(base_url, region) {
+  
+  url = str_c(base_url, url_format(region))
+  
+  # pull website
+  
+  geo = 
+    # read website
+    read_html(url) %>% 
+    # pull header which contains the prov/dist/constit as text
+    html_nodes('.breadcrumb') %>% 
+    html_text() %>% 
+    data.frame() 
+  
+  geo = separate(geo, col = ., sep = '\\n', into = c('natl', 'province', 'district', 'constituency', 'gunk')) %>% 
+    select(-natl, -gunk) %>% 
+    mutate(province = pretty_strings(str_replace_all(province, 'Province : ', '')),
+           district = pretty_strings(str_replace_all(district, 'District : ', '')),
+           constituency = pretty_strings(str_replace_all(constituency, 'Constituency : ', ''))
+    )
+  
+  return(geo)
+    
+}
+
 # merge turnout and candidate totals --------------------------------------
 merge_turnout = function(candid_df, turnout_df) {
   candid_df %>% 
@@ -253,7 +278,7 @@ filter_candid = function(df){
 # for the turnout numbers by constituency
 filter_turnout = function(df){
   df %>% select(
-    province, district, constituency, contains('website'),
+    province, district, constituency, contains('website'), -`Released on Website`,
     year,
     vote_count, cast, registered,
     rejected, pct_rejected,
