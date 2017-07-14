@@ -28,10 +28,10 @@
 as11_raw = read_csv('rawdata/tabula-2011_national_assembly_elections_results.csv')
 
 # glance at structure
-glimpse(as11_raw)
+# glimpse(as11_raw)
 
 # check if columns are necessary
-t(as11_raw %>% summarise_all(funs(sum(!is.na(.)))))
+# t(as11_raw %>% summarise_all(funs(sum(!is.na(.)))))
 
 # So, annoyingly, the data is structured as such:
 # candidate_region contains an initial row specifying the constituency name
