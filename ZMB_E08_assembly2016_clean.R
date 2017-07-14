@@ -55,7 +55,7 @@ for (i in 1:nrow(constit)) {
   
   votes = bind_rows(votes, vote)
   
-  # (2) get the registered
+  # (2) get the turnout/registered
   reg = html %>% 
     html_node('#ptable .table') %>% 
     html_table(header = FALSE)

@@ -46,6 +46,19 @@ calc_pctVotes = function(df, group1 = 'party', group2 = 'year') {
 }
 
 
+# convert constituency names to URL format --------------------------------
+
+url_format = function(region) {
+  
+  url = str_replace_all(str_to_lower(region),  ' ', '_')
+  
+  url = str_replace_all(url, "'", '%2527')
+  
+  return(url)
+}
+
+
+
 # convert any strings to nice title case sans spaces ----------------------
 pretty_strings = function(string) {
   # df = df %>% 
@@ -115,6 +128,34 @@ calc_turnout = function(df){
   
 }
 
+# Function to pull turnout numbers from website ---------------------------
+
+pull_turnout = function(base_url, region, year) {
+  
+  url = str_c(base_url, url_format(region))
+  
+  # pull website
+  turnout = read_html(url) %>% 
+    # extract nodes of table
+    html_node('#ptable table') %>% 
+    # convert to table
+    html_table(header = FALSE) %>% 
+    # bind region
+    mutate(constituency = region) %>% 
+    # transpose; swing to long table
+    spread(X1, X2) %>%
+    # rename cols, convert to numbers
+    mutate(registered = str2num(`Total Registered Voters`),
+           cast = str2num(`Total Votes Cast`),
+           rejected = str2num(`Total Votes Rejected`),
+           turnout_web = str2pct(Turnout),
+           year = year) %>% 
+    calc_turnout()
+  
+  return(turnout)
+  
+}
+
 # merge turnout and candidate totals --------------------------------------
 merge_turnout = function(candid_df, turnout_df) {
   candid_df %>% 
@@ -126,10 +167,19 @@ merge_turnout = function(candid_df, turnout_df) {
 
 # verification ------------------------------------------------------------
 # Check my calcs of turnout jibe with those on website or in pdf
-check_turnout = function(df, ndigits = 2) {
+check_turnout = function(df, ndigits = 2, incl_rejected = TRUE) {
+  
   errors = df %>% 
-    mutate(turnout_ok = round(turnout_web, ndigits) == round(turnout, ndigits),
-           rejected_ok = round(pct_rejected_web, ndigits) == round(pct_rejected, ndigits)) %>% 
+    mutate(turnout_ok = round(turnout_web, ndigits) == round(turnout, ndigits))
+  
+  if(incl_rejected == TRUE){
+    errors = errors %>% 
+      mutate(rejected_ok = round(pct_rejected_web, ndigits) == round(pct_rejected, ndigits))
+  } else {
+    errors = errors %>% mutate(rejected_ok = TRUE, pct_rejected_web = NA)
+  }
+  
+  errors = errors %>%         
     filter(turnout_ok == FALSE | rejected_ok == FALSE) %>% 
     select(constituency, turnout_web, turnout, pct_rejected_web, pct_rejected)
   
@@ -139,15 +189,26 @@ check_turnout = function(df, ndigits = 2) {
   }
 }
 
+
 # Check my calcs of pct_cast jibe with those on website or in pdf
-check_pct = function(df, ndigits = 2) {
+check_pct = function(df, ndigits = 2, incl_registered = TRUE) {
   errors = df %>% 
     mutate(pct_cast_round = round(pct_cast, ndigits),
            pct_cast_round_web = round(pct_cast_web, ndigits),
-           cast_ok = pct_cast_round_web == pct_cast_round,
-           pct_reg_round =  round(pct_registered, ndigits),
-           pct_reg_round_web = round(pct_registered_web, ndigits),
-           registered_ok = pct_reg_round_web == pct_reg_round) %>% 
+           cast_ok = pct_cast_round_web == pct_cast_round)
+  
+  if(incl_registered == TRUE){
+    errors = errors %>% mutate(
+      pct_reg_round =  round(pct_registered, ndigits),
+      pct_reg_round_web = round(pct_registered_web, ndigits),
+      registered_ok = pct_reg_round_web == pct_reg_round)
+  } else{ 
+    errors = errors %>%
+      mutate(registered_ok = TRUE,  pct_registered_web = NA, pct_registered = NA, 
+             pct_reg_round_web = NA, pct_reg_round = NA)
+  }
+  
+  errors = errors %>% 
     filter(cast_ok == FALSE | registered_ok == FALSE)
   
   if(nrow(errors) > 0) {
@@ -166,7 +227,8 @@ check_constit = function(candid_df, turnout_df) {
   
   comb = full_join(candid_sum, turnout_df, by = 'constituency') %>% 
     mutate(tot_ok = candid_count == vote_count) %>% 
-    filter(tot_ok == FALSE)
+    filter(tot_ok == FALSE) %>% 
+    select(constituency, candid_count, turnout_count = vote_count)
   
   if(nrow(comb) > 0) {
     warning('Candidate summary numbers and turnout do not agree')
