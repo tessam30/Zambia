@@ -32,6 +32,13 @@ str2pct = function(value){
   as.numeric(str_replace_all(value, '%', ''))/100
 }
 
+
+# convert to percent ------------------------------------------------------
+
+percent = function(x, ndigits = 1) {
+  paste0(sprintf(paste0("%.", ndigits, "f"), x * 100), "%")
+}
+
 # summarise and calc pct of total votes -----------------------------------
 calc_pctVotes = function(df, group1 = 'party', group2 = 'year') {
   summ = df %>% 

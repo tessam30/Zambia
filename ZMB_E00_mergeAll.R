@@ -63,7 +63,7 @@ pr_votes = bind_rows(pr16, pr_votes_06_15)
 pr_turnout_06_15 = bind_rows(pr15_total, pr11_total)
 pr_turnout_06_15 = bind_rows(pr_turnout_06_15, pr08_total)
 pr_turnout_06_15 = bind_rows(pr_turnout_06_15, pr06_total)
-pr_turnout = bind_rows(pr16_total, pr_turnout_06_16)
+pr_turnout = bind_rows(pr16_total, pr_turnout_06_15)
 
 
 
