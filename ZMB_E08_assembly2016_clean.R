@@ -17,43 +17,52 @@
 # library(tidyr)
 
 
+# goals -------------------------------------------------------------------
+# [0] Scrape assembly data from website
+# [1] Pull out the votes by candidate by constituency --> as16
+# [2] Get the relationship between the province, districts, constituencies
+# [3] Pull the turnout by constituency --> as16_total
+
+
+
 # Import constituencies ---------------------------------------------------
 
 base_url = "https://www.elections.org.zm/results/2016_national_assembly_elections/constituency/"
-export_dir = '~/Documents/GitHub/Zambia/processeddata/'
 
 constit = read.csv('~/Documents/GitHub/Zambia/processeddata/ZMB_constituencies.csv')
 
 # convert to URLs to rvest:
 constit = constit %>% 
   rowwise() %>% 
-  mutate(cons = str_replace_all(str_to_lower(Constituency),  ' ', '_'),
-         cons = str_replace_all(cons, "'", '%2527'),
+  mutate(cons = url_format(Constituency),
          url = paste0(base_url, cons))
 
 
-# Import data -------------------------------------------------------------
-votes = NULL
-registered = NULL
+# [0] Scrape data from website: Import data -------------------------------------------------------------
+as16_raw = NULL
+as16_total_raw = NULL
 dists = NULL
 
 
+# Note: more efficient to use lapply and function written in ZMB_E01_helpers.R
 for (i in 1:nrow(constit)) {
   region = constit$Constituency[i]
   url = constit$url[i]
   
-  print(region)
-
+  print(as.character(region))
+  
   html = read_html(url)
   
   # (1) get the voting totals ([[1]])
   vote = html %>% 
+    # access table in html
     html_node('#table .table') %>% 
-    html_table()
+    # convert to a table
+    html_table() %>% 
+    # add in constituency name
+    mutate(constituency = region)
   
-  vote = vote %>% mutate(constituency = region)
-  
-  votes = bind_rows(votes, vote)
+  as16_raw = bind_rows(as16_raw, vote)
   
   # (2) get the turnout/registered
   reg = html %>% 
@@ -62,7 +71,7 @@ for (i in 1:nrow(constit)) {
   
   reg = reg %>% mutate(constituency = region)
   
-  registered = bind_rows(registered, reg)
+  as16_total_raw = bind_rows(as16_total_raw, reg)
   
   # (3) get the relationship b/w prov/dist/constituency
   dist = html_nodes(html, '.breadcrumb') %>% html_text()
@@ -70,7 +79,7 @@ for (i in 1:nrow(constit)) {
 }
 
 
-# clean up stuff ----------------------------------------------------------
+# [2] clean up districts ----------------------------------------------------------
 # unnest districts, provinces
 dists = dists %>%
   separate(col = dist, sep = '\\n', into = c('natl', 'province', 'district', 'constituency', 'gunk')) %>% 
@@ -80,78 +89,75 @@ dists = dists %>%
   mutate(province = str_trim(str_to_title(str_replace_all(province, 'Province : ', ''))),
          district = str_trim(str_to_title(str_replace_all(district, 'District : ', ''))),
          constituency = str_trim(str_to_title(str_replace_all(constituency, 'Constituency : ', '')))
-         )
+  )
 
 # Export "official" list of constituencies with district and province names
-write.csv(dists, paste0(export_dir, 'ZMB_2016_adminnames.csv'))
+write.csv(dists, '2016_geonames.csv')
 
-# swing registered long
-registered = registered %>% 
-  spread(X1, X2)
 
-registered = registered %>% mutate(registered = as.numeric(str_replace_all(`Total Registered Voters`, ',', '')),
-                      cast = as.numeric(str_replace_all(`Total Votes Cast`, ',', '')),
-                      rejected = as.numeric(str_replace_all(`Total Votes Rejected`, ',', '')),
-                      valid_votes = cast - rejected,
-                      turnout = cast / registered,
-                      valid_turnout = valid_votes / registered,
-                      pct_rejected = rejected/cast)
+# [3] clean turnout numbers ---------------------------------------------------
 
-# merge registered w/ district and province name
-registered = left_join(registered, dists, by = "constituency")
 
-if(sum(is.na(registered$district)) > 0) {
+as16_total = as16_total_raw %>% 
+  # swing registered long
+  spread(X1, X2) %>% 
+  mutate(year = 2016,
+    registered = str2num(`Total Registered Voters`),
+         cast = str2num(`Total Votes Cast`),
+         rejected = str2num(`Total Votes Rejected`),
+         turnout_web = str2pct(Turnout)) %>% 
+  calc_turnout() %>% 
+  # merge registered w/ district and province name
+  left_join(dists, by = "constituency")
+
+if(sum(is.na(as16_total$district)) > 0) {
   warning('merge of district names w/ registered votes did not work')
 }
 
 
-# CALC VOTES PCT BY constit
-# WIN formalArgs(are there outliers of non-3 party candidates that won)
+
+# [1] CALC VOTES PCT BY constit -------------------------------------------
+
 
 # clean votes
-votes =  votes %>% 
-  separate(`Candidate Name`, sep = ', ', into = c('lastname', 'firstname')) %>% 
-  mutate(candidate = str_to_title(paste(firstname, lastname, sep = ' ')),
-         votes = as.numeric(str_replace_all(Votes, ',', ''))) %>% 
-  group_by(constituency) %>% 
-  mutate(pct_votes = votes / sum(votes),
-         rank = min_rank(desc(votes)),
-         won = ifelse(rank == 1, 1, 0),
-         margin_victory = ifelse(rank == 1, votes - lead(votes), NA),
-         pct_margin = ifelse(rank == 1, pct_votes - lead(pct_votes), NA)) %>% 
-  # fill margin for the entire consituency
-  fill(contains('margin'))
-
-votes = votes %>% ungroup()
-
-# merge votes w/ district and province name
-
-votes = left_join(votes, dists, by = "constituency")
-
-if(sum(is.na(votes$district)) > 0) {
-  warning('merge of district names w/ registered votes did not work')
-}
+as16 =  as16_raw %>% 
+  split_candid('Candidate Name', sep = ', ') %>% 
+  # merge votes w/ district and province name
+  left_join(dists, by = "constituency") %>% 
+  rename(party = Party) %>% 
+  mutate(year = 2016,
+         vote_count = str2num(Votes)) %>% 
+  # calc percentages
+  calc_stats() %>% 
+  # calc pct_turnout
+  merge_turnout(as16_total)
 
 
+
+  if(sum(is.na(as16$district)) > 0) {
+    warning('merge of district names w/ registered votes did not work')
+  }
+
+
+
+# checks ------------------------------------------------------------------
+# check website totals agree
+# Note: no percentages were calculated in the candidate-level breakdown
+check_turnout(as16_total, incl_rejected = FALSE)
 
 # collapse votes down to constituency level -------------------------------
 # Check to make sure that the constitency-level individual vote tallies (in `votes`) 
 # match with the summaries provided in `registered`
 
-vote_sum = votes %>% group_by(province, district, constituency) %>% summarise(votes_indiv = sum(votes))
-
-vote_check = full_join(vote_sum, registered, by = c("province", "district", "constituency"))
-
-vote_check = vote_check %>% 
-  select(province, district, constituency, cast, rejected, valid_votes, votes_indiv) %>% 
-  mutate(notEqual = valid_votes != votes_indiv)
-
-if(sum(vote_check$notEqual) > 0){
-  warning('vote tallies do not match for some constituencies')
-}
+check_constit(as16, as16_total)
 
 
-# export ------------------------------------------------------------------
-write.csv(registered, 'ZMB_assemblyelec2016_registration.csv')
-write.csv(votes, 'ZMB_assemblyelec2016_votes_byconstit.csv')
+# filter out just the good stuff ------------------------------------------
+as16 = filter_candid(as16)
+as16_total = filter_turnout(as16_total)
+
+rm(vote, reg, dists, constit, as16_total_raw, as16_raw)
+
+
+
 
