@@ -28,10 +28,20 @@
 # 
 # base_dir = '~/Documents/GitHub/Zambia/'
 
+# Sources -----------------------------------------------------------------
+# Zambia election constituencies were split from 150 constituencies to 156 for 2016 election. (https://zambiareports.com/2015/05/13/cabinet-creates-six-new-constituencies/)
+# 1) Zambia 2016 Constituencies source: https://github.com/lightonphiri/data-zambia-shapefiles/tree/master/cso-shapefiles
+# Based on: http://lightonphiri.org/blog/mapping-the-zambia-2016-presidential-election-results
+# 2) Zambia pre-2016 Constituencies from U. Michigan Constituency-Level Elections Archive
+# http://www.electiondataarchive.org/datacenter-gred.html
+# 3) Zambia district, province data from John Booz, USAID | Zambia, from Ministry of Land, circa 2015.
+# 4) Election data from Zambian government: https://www.elections.org.zm/general_election_2016.php
+
 # import master name list. ------------------------------------------------
 # Creates a crosswalk between the shapefile names and those used on election website (with vote count)
 # Also connects the 150 constituencies from pre-2016 to the 156 afterwards.
 # Note that while the names may be the same, the boundaries have shifted and in some cases are quite different.
+# Boundary crosswalk created by pulling geographic names from the election 
 geo_base = read_excel(paste0(base_dir, 'ZMB_admin_crosswalk.xlsx'), sheet = 2)
 
 
