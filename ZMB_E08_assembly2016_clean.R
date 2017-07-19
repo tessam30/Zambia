@@ -141,6 +141,10 @@ as16 =  as16_raw %>%
 
 
 # checks ------------------------------------------------------------------
+if(nrow(as16_total) != 156) {
+  warning('check if districts are missing')
+}
+
 # check website totals agree
 # Note: no percentages were calculated in the candidate-level breakdown
 check_turnout(as16_total, incl_rejected = FALSE)
