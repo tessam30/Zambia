@@ -83,13 +83,14 @@ pr16 = lapply(cand_prof, votes) %>%
 # [2] Pull turnout data ---------------------------------------------------
 base_url = c("https://www.elections.org.zm/results/2016_presidential_election/constituency/")
 
-# unique constituencies, converted into url-compatible format
+# get unique constituencies, convert into url-compatible format
 constits = pr16 %>% 
   select(constituency) %>% 
   distinct() %>% 
   pull(constituency)
 
 # pull_turnout defined in `ZMB_E01_helpers.R`
+# reads in website and pulls out the number of registered, cast, and rejected votes / constituency
 pr16_total = lapply(constits, function(x) pull_turnout(base_url, x, 2016)) %>% 
   bind_rows() %>% 
   # merge geo data
@@ -97,7 +98,7 @@ pr16_total = lapply(constits, function(x) pull_turnout(base_url, x, 2016)) %>%
   rename(district = district2016)
 
 
-# merge cast into candidate level info ------------------------------------
+# merge # cast votes into candidate level info ------------------------------------
 pr16 = merge_turnout(pr16, pr16_total)
 
 

@@ -147,6 +147,9 @@ pr08 =  pr08 %>%
 pr08 = merge_turnout(pr08, pr08_total)
 
 # check calcs
+# NOTE: when looking through the data, it's very clear that the pct_cast and pct_registered numbers 
+# they report have been rounded to very differnt levels.  pct_cast rounded to nearest percent;
+# pct_registered rounded to nearest _hundredth_ of a percent
 check_pct(pr08)
 
 # check total is equal b/w two tables

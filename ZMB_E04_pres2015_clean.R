@@ -25,13 +25,15 @@
 base_url = c("https://www.elections.org.zm/results/2015_presidential_election/constituency/")
 constits = geo_base %>% filter(!is.na(website2015)) %>%  pull(website2015)
 
+# pull_dists defined in ZMB_E01_helpers.R; scrapes from website and converts district names into table
 geo15 = lapply(constits, function(x) pull_dists(base_url, x)) %>% 
   bind_rows() %>% 
   rename(website2015 = constituency)
 
-# merge with the base, to get the "official" 2016 constituency names
+# merge with the base, to get the "official" 2015 constituency names
 geo15 = full_join( geo_base %>% select(constituency, website2015), geo15, by = 'website2015')
 
+# export
 # write.csv(geo15, '2015_geonames.csv')
 
 # [2] Set up candidates -------------------------------------------------------
@@ -47,9 +49,9 @@ url_list = str_c(base_url, cand_prof)
 
 # Steps:
 # 1. for each name in cand_prof, append the string to the end of the base_url line
-# 2. hit the url and extrac the "td" table into a matrix
-# 3. convert the matrix to a dataframe that is reshaped into 3 vectors
-# 4. Add a new column with candidates name, add in a new columm with party
+# 2. hit the url and extract the "td" table into a matrix
+# 3. convert the matrix to a dataframe that is reshaped into 3 columns
+# 4. Add a new column with candidate's name, add in a new columm with party
 
 votes = function(x) {
   

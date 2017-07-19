@@ -81,3 +81,6 @@ zmb16 = left_join(zmb16, geo_base, by = c('shp2016' = "shp2016"))
 # p1 = plot(zmb16 %>% select(province))
 
 p2 = ggplot(zmb16) + geom_sf(aes(fill = constituency), show.legend = FALSE)
+
+# Reset working directory -------------------------------------------------
+setwd(base_dir)
