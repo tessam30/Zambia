@@ -65,17 +65,16 @@ pr11_all = pr11_raw %>%
   # split candidate_region into candidate name and party affiliation
   separate(candidate_region, into = c('candidate', 'party'), sep = '\\,', remove = FALSE) %>% 
   # split name into first, middle, last name
-  separate(candidate, into = c('last_name', 'first_name', 'middle_name'), sep = ' ') %>% 
+  split_candid('candidate') %>% 
   
   # make constit purty
   mutate(website2011 = ifelse(is.na(constit2), str_to_title(constit1),
                                str_to_title(paste(constit1, constit2))),
-         # make names pretty
-         first_name = ifelse(isCandidate, str_trim(str_to_title(paste(first_name, middle_name))), NA),
-         last_name = ifelse(isCandidate, str_trim(str_to_title(last_name)), NA),
-         candidate = ifelse(isCandidate, paste(first_name, last_name), NA)
-  ) %>% 
-  select(-middle_name)
+         # remove names if not a candidate
+         first_name = ifelse(isCandidate, first_name, NA),
+         last_name = ifelse(isCandidate, last_name, NA),
+         candidate = ifelse(isCandidate, candidate, NA)
+  ) 
 
 
 # check import looks right ------------------------------------------------
@@ -134,7 +133,7 @@ pr11_total = pr11_all %>%
 
 
 # finish pr11 calcs -------------------------------------------------------
-
+# merges the total number of votes cast, to calculate the percent of votes received by the toal number cast.
 pr11 = pr11 %>% merge_turnout(pr11_total)
 
 
