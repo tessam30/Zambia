@@ -5,6 +5,13 @@
 # 6 July 2017
 
 
+# KNOWN ISSUES ------------------------------------------------------------
+# 1. 2 constituencies are missing data; assume they didn't have elections in 2011
+# 2. Chawama candidate MUSONDAMWAUME Borniface K lacks info on party affiliation
+# 3. Nalikawana candidate LUNGWANGWA Lungwangwa G lacks party affiliation.  
+#       Initally assumed to be UPND: https://www.elections.org.zm/candidates/2016_national_assembly_elections/candidate/lungwangwa,lungwangwa,upnd
+#       ... but there's already a UPND candidate that year
+
 # setup -------------------------------------------------------------------
 # taken care of in ZMB_E01_helpers.R
 # library(readxl)
@@ -19,7 +26,7 @@
 # data pulled from http://www.elections.org.zm/media/28092011_2011_national_assembly_elections_results.pdf
 # on 29 June 2017
 # Extracted from pdf using Tabula (http://tabula.technology/) to begin the cleaning process
-  
+
 # Goal is two-fold:
 # 1) Pull the breakdown of votes by candidate / constituency
 # 2) Pull the turnout numbers by constituency
@@ -52,7 +59,10 @@ as11 = as11_raw %>%
     
     # create copy of candidate_region and a flag for if it's a candidate row
     # candidate names and their parties are separated by a comma
-    isCandidate = ifelse(str_detect(candidate_region, '\\,'), 1, 0),
+    # NOTE: 2 candidates have names that are too long
+    isCandidate = ifelse(str_detect(candidate_region, '\\,') |
+                           str_detect(candidate_region, 'MUSONDAMWAUME Borniface K') |
+                           str_detect(candidate_region, 'LUNGWANGWA Lungwangwa G'), 1, 0),
     candidate = candidate_region
   ) %>% 
   # fill down constituency names
@@ -60,61 +70,80 @@ as11 = as11_raw %>%
   # split constit into id and name
   separate(constit, into = c('constit_id', 'constit1', 'constit2'), sep = ' ') %>%
   # split candidate_region into candidate name and party affiliation
-  separate(candidate, into = c('candidate', 'Party'), sep = '\\,') %>% 
+  separate(candidate, into = c('candidate', 'party'), sep = '\\,') %>% 
   # split name into first, middle, last name
-  separate(candidate, into = c('last_name', 'first_name', 'middle_name'), sep = ' ') %>% 
-
+  split_candid('candidate') %>% 
+  
   mutate(
     # make constit purty
-    constituency = ifelse(is.na(constit2), str_to_title(constit1),
-                               str_to_title(paste(constit1, constit2))),
-    # make names pretty
-    first_name = ifelse(isCandidate, str_trim(str_to_title(paste(first_name, middle_name))), NA),
-    last_name = ifelse(isCandidate, str_trim(str_to_title(last_name)), NA),
-    candidate = ifelse(isCandidate, paste(first_name, last_name), NA)
-    ) %>% 
-  select(-middle_name)
+    website2011 = ifelse(is.na(constit2), str_to_title(constit1),
+                         str_to_title(paste(constit1, constit2))),
+    # replace non-candidate names w/ NAs
+    first_name = ifelse(isCandidate, first_name, NA),
+    last_name = ifelse(isCandidate, last_name, NA),
+    candidate = ifelse(isCandidate, candidate, NA),
+    
+    # convert strings to numbers
+    rejected = str2num(rejected_ballotpapers),
+    cast = str2num(total_votes),
+    registered = str2num(total_registered),
+    pct_cast_web = str2pct(pct_cast_web),
+    pct_registered_web = str2pct(pct_registered_web),
+    pct_rejected_web = str2pct(pct_rejected_web),
+    turnout_web = str2pct(pct_poll)
+  ) %>% 
+  # merge geo
+  left_join(geo_base %>% select(constituency, province2006, district2006, website2011), by = 'website2011') %>% 
+  rename(province = province2006, district = district2006)
 
 
-# check import looks right ------------------------------------------------
-# should all have 12 
-View(as11 %>% count(constit_id))
+
 
 # totals at the constituency level; also includes number of rejected votes
 as11_total = as11 %>% 
   filter(total == 1,
          # remove extra text taken along for the ride
-         !is.na(votes)
-         ) %>% 
-    mutate(rejected = as.numeric(str_replace_all(rejected_ballotpapers, ',', '')),
-           cast = as.numeric(str_replace_all(total_votes, ',', '')),
-           registered = as.numeric(str_replace_all(total_registered, ',', '')),
-           pct_rejected_lab = pct_rejected,
-           pct_rejected = rejected/cast,
-           turnout = cast / registered,
-           valid_turnout = votes / registered
-    )
+         !is.na(vote_count)
+  ) %>% 
+  calc_turnout()
 
 # After check by eye, pct_rejected calc looks on target with what Zambia reports; dropping their formatted number
 # pct_poll is equivalent to turnout.
-  select(constit_id, constituency, year, registered, cast, votes,
-         rejected, pct_rejected, turnout, valid_turnout)
-  
-  
-  
-  
+
+
+
+
 # get individual data -----------------------------------------------------
-as11_indiv = as11 %>% 
-    filter(isCandidate == 1) %>% 
-    select(constit_id, constituency, year, 
-           candidate, first_name, last_name, Party,
-           vote_count, contains('pct'),
-           -pct_poll, -pct_rejected) %>% 
-    group_by(constituency) %>% 
-    mutate(pct_votes = vote_count / sum(vote_count),
-           rank = min_rank(desc(vote_count)),
-           won = ifelse(rank == 1, 1, 0),
-           margin_victory = ifelse(rank == 1, vote_count - lead(vote_count), NA),
-           pct_margin = ifelse(rank == 1, pct_votes - lead(pct_votes), NA)) %>% 
-    # fill margin for the entire consituency
-    fill(pct_margin, margin_victory)
+as11 = as11 %>% 
+  filter(isCandidate == 1) %>% 
+  # remove cols that are only available in the turnout, sumamry lines
+  select(-cast, -registered, -rejected, -turnout_web, -total_registered, -pct_rejected_web) %>% 
+  merge_turnout(as11_total) %>% 
+  calc_stats()
+
+
+# checks ------------------------------------------------------------------
+# Note: Nakonde and Magoye missing: no parliamentary elections that year?
+if(nrow(as11_total) != 150) {
+  warning('check if districts are missing')
+}
+
+check_pct(as11)
+
+# check website totals agree
+# Note: no percentages were calculated in the candidate-level breakdown
+check_turnout(as11_total)
+
+# collapse votes down to constituency level -------------------------------
+# Check to make sure that the constitency-level individual vote tallies (in `votes`) 
+# match with the summaries provided in `registered`
+
+check_constit(as11, as11_total)
+
+
+# filter out just the good stuff ------------------------------------------
+as11 = filter_candid(as11)
+as11_total = filter_turnout(as11_total)
+
+rm(as11_raw)
+
