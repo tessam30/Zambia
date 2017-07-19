@@ -2,15 +2,19 @@
 # In previous files, election data from Zambian elections were imported
 # cleaned, and merged.
 
-# This file plots 3 figures:
+# This file plots 2 figures:
 # [1] choropleths of % each party won, by constituency, by year, for presidential elections
-# [2] choropleths of % each party won, by constituency, by year, for parliamentary elections
-# [3] choropleths of _which_ party won, by constituency, by year, for parliamentary elections
-# [4] legend for #1 and 2.
-
+# [2] legend for choropleth
 
 # Laura Hughes, lhughes@usaid.gov, USAID | GeoCenter, 7 July 2017
 
+
+# Structure ---------------------------------------------------------------
+# 1. Setup key params: choropleth breakpoints, annotation locations, export dims, which parties to plot
+# 2. Import data, including summary stats of pct won by each party 
+# 3. Create function to plot choropleth of pct won by each party
+# 4. Call that function for 2016 and pre-2015 (since they have separate shapefiles)
+# 5. Plot legend to be appended to choros in Illustrator
 
 # setup -------------------------------------------------------------------
 
@@ -20,24 +24,27 @@ pct_breaks = c(seq(-5, 15, by = 5), seq(20, 100, by = 20))/100
 # placement of annotations: nat'l voting pcts, by party
 x_annot = -200000
 y_annot = -900000
-
+# font size for annotations
 size_annot = 10
 
+# export dimensions for plot
+width = 8
+height = 10
 
-# import data -------------------------------------------------------------
-# source('ZMB_pres_mergeAll.R')
-# source('ZMB_E201_pct_byparty.R')
-
-
-# filter just parties with larger vote counts -----------------------------------------------------------
-
+# filter just parties with larger vote counts
 # order for plotting the parties
 party_order = c('PF', 'UPND', 'UPND, FDD, UNIP (UDA)', 'MMD')
 # , 'FDD', 'ADD', 'UNIP')
 
-year_order = c(2016, 2015, 2011, 2008, 2006)
+# import data -------------------------------------------------------------
+# load and merge all years to geographic data
+# source('ZMB_E00_mergeAll.R')
 
+# calculate summary statistics: pct each party won nationally each year
+# source('ZMB_E101_calcpct_byparty.R')
 
+# themes (for ggplot funcs)
+# source('ZMB_E200_themes.R')
 
 # main choropleth plot function -------------------------------------------
 # NOTE: can't simply facet over year and party, b/c can't join to a single shapefile.
@@ -50,14 +57,17 @@ plot_votes = function(geo_df, sel_year, party_tot,
   
   # geodata frame, complete with voting results by party/constituency merged in
   geo_df = geo_df %>%
+    # filter out 
     filter(party %in% party_order) %>% 
     mutate(vote_cat = cut(pct_votes, breaks = pct_breaks)) 
   
-  # reorder levels
+  # reorder levels: arrange by the most recent election results
   geo_df$party = forcats::fct_relevel(geo_df$party, pty_order)
-  geo_df$year = factor(geo_df$year, levels = yr_order)
-  party_tot$year = factor(party_tot$year, levels = yr_order)
   party_tot$party = forcats::fct_relevel(party_tot$party, pty_order)
+  
+  # sort years from most recent to least
+  geo_df$year = fct_rev(factor(geo_df$year))
+  party_tot$year = fct_rev(factor(party_tot$year))
   
   p = ggplot(geo_df) +
     # -- annotations -- total pct by party, across the country
@@ -92,13 +102,9 @@ plot_votes = function(geo_df, sel_year, party_tot,
 p16 = plot_votes(pres16, 2016, party_tot %>% filter(year == 2016))
 p06_15 = plot_votes(pres_06_15, '2006-2015', party_tot %>% filter(year != 2016))
 
-# [2] PARLIAMENTARY DATA ---------------------------------------------------
-# plot for each year
-a16 = plot_votes(parl16, 2016, parl_tot %>% filter(year == 2016), elec_type = 'parl')
-a06_15 = plot_votes(parl_06_15, '2006-2015', party_tot %>% filter(year != 2016))
 
 
-# [4] plot legend -------------------------------------------------------------
+# [2] plot legend -------------------------------------------------------------
 colors = parties %>% select(party = party_name, color) %>% distinct() 
 
 lgnd = data.frame(color = rep(colors$color, length(pct_breaks)),
@@ -132,4 +138,4 @@ ggplot(lgnd, aes(x = vote_cat, y = 1, label = pct*100,
   theme_facet()
 
 
-ggsave(paste0(export_dir, 'ZMB_pres_scales.pdf'), width = 8, height = 10)
+ggsave(paste0(export_dir, 'ZMB_pres_scales.pdf'), width = width, height = height)
