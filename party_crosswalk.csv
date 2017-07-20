@@ -1,20 +1,21 @@
-party_name,pres2006,pres2008,pres2011,pres2015,pres2016,numYears,category10,color,human_color,order
-4R,,,,4R,,1,7f7f7f,#7f7f7f,grey,
-ADD,,,ADD,,,1,7f7f7f,#7f7f7f,grey,5
-CDP,,,,CDP,,1,7f7f7f,#7f7f7f,grey,
-DA,,,,,DA,1,7f7f7f,#7f7f7f,grey,
-FDA,,,,FDA,,1,7f7f7f,#7f7f7f,grey,
-FDD,,,FDD,FDD,FDD,3,2ca02c,#2ca02c,green,4
-Green Party,,,,GREENS,GREENS,2,9467bd,#9467bd,purple,
-Heritage Party,HP,HERITAGE,HERITAGE,HERITAGE,,2,8c564b,#8c564b,brown,
-MMD,MMD,MMD,MMD,MMD,,2,17becf,#17becf,teal,3
-NAREP,,,NAREP,NAREP,,2,17becf,#17becf,teal,
-NMP,,,NMP,,,1,7f7f7f,#7f7f7f,grey,
-PAC,,,,,PAC,1,7f7f7f,#7f7f7f,grey,
-Patriotic Front,PF,PF,PF,PF,PF,3,1f77b4,#1f77b4,blue,1
-Rainbow Party,,,,,RAINBOW,1,7f7f7f,#7f7f7f,grey,
-UNIP,,,UNIP,UNIP,UNIP,3,d62728,#d62728,red,6
-UPND,"UPND, FDD, UNIP (UDA)",UPND,UPND,UPND,UPND,3,ff7f0e,#ff7f0e,orange,2
-UPP,,,,,UPP,1,7f7f7f,#7f7f7f,grey,
-ZAD,,,ZED,,,1,7f7f7f,#7f7f7f,grey,
-APC,APC,,,,,1,7f7f7f,#7f7f7f,grey,
+party_name,pres2006,pres2008,pres2011,pres2015,pres2016,category10,color,human_color,order,num_seats
+Patriotic Front,PF,PF,PF,PF,PF,1f77b4,#1f77b4,blue,1,140
+UPND,"UPND, FDD, UNIP (UDA)",UPND,UPND,UPND,UPND,ff7f0e,#ff7f0e,orange,2,86
+MMD,MMD,MMD,MMD,MMD,MMD,17becf,#17becf,teal,3,57
+Independent,Independent,,IND,,IND,,,,,17
+FDD,,,FDD,FDD,FDD,2ca02c,#2ca02c,green,4,2
+ADD,,,ADD,,,7f7f7f,#7f7f7f,grey,5,1
+4R,,,,4R,,7f7f7f,#7f7f7f,grey,,
+CDP,,,,CDP,,7f7f7f,#7f7f7f,grey,,
+DA,,,,,DA,7f7f7f,#7f7f7f,grey,,
+FDA,,,,FDA,,7f7f7f,#7f7f7f,grey,,
+Green Party,,,,GREENS,GREENS,9467bd,#9467bd,purple,,
+Heritage Party,HP,HERITAGE,HERITAGE,HERITAGE,,8c564b,#8c564b,brown,,
+NAREP,,,NAREP,NAREP,,17becf,#17becf,teal,,
+NMP,,,NMP,,,7f7f7f,#7f7f7f,grey,,
+PAC,,,,,PAC,7f7f7f,#7f7f7f,grey,,
+Rainbow Party,,,,,RAINBOW,7f7f7f,#7f7f7f,grey,,
+UNIP,,,UNIP,UNIP,UNIP,d62728,#d62728,red,6,
+UPP,,,,,UPP,7f7f7f,#7f7f7f,grey,,
+ZAD,,,ZED,,,7f7f7f,#7f7f7f,grey,,
+APC,APC,,,,,7f7f7f,#7f7f7f,grey,,
