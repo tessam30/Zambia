@@ -10,10 +10,12 @@ affil = as_votes %>%
 affil %>% filter(partyChg == 0) %>% count(`2011`, `2016`)
 
 # Create a unique ID to track the 
-as_affil = pr_votes %>% 
+as_affil = as_votes %>% 
   mutate(candidID = dense_rank(paste(candidate, constituency))) %>% 
   group_by(candidID) %>% 
-  mutate(num_elections = n()) %>% 
+  mutate(num_elections = n(),
+         partyChg = lead(party) != party) %>% 
+  fill(partyChg) %>% 
   ungroup() %>% 
   filter(num_elections > 1) %>% 
   group_by(party) %>% 
@@ -27,7 +29,8 @@ affil = pr_votes %>%
   mutate(partyChg = `2016` == `2011`)
 
 ggplot(as_affil, aes(x = year, y = fct_reorder(party, party_ct),
-                                                   group = candidID)) +
+                     color = partyChg, group = candidID)) +
   geom_line(size = 3, alpha = 0.2) +
+  scale_color_manual(values = c('lightblue', 'orange')) +
   ggtitle('Change in party between Parliamentary elections') +
   theme_minimal()
