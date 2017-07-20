@@ -123,7 +123,7 @@ as06_total = as06 %>%
 
 
 # clean votes
-as06_ =  as06 %>% 
+as06 =  as06 %>% 
   filter(isCandidate == 1) %>% 
   # remove unnecessary cols
   select(-rejected, -cast, -registered) %>% 
@@ -142,11 +142,11 @@ as06_ =  as06 %>%
 # Check to make sure that the constitency-level individual vote tallies (in `votes`) 
 # match with the summaries provided in `registered`
 
-check_constit(as06_, as06_total)
+check_constit(as06, as06_total)
 
 
 # filter out just the good stuff ------------------------------------------
-as06_ = filter_candid(as06_)
+as06 = filter_candid(as06)
 as06_total = filter_turnout(as06_total)
 
 rm(as06_raw)
