@@ -27,13 +27,13 @@
     # - as_turnout: all combined data, 2006-2016. Should not be used to merge to geographic data
   # 5. Geographic data: shapefiles of the 150 or 156 constituencies 
     # --> zmb15 (shapefile for 2015 and before)
-# --> zmb16 (shapefile for 2016)
-# --> pres16 (shp + pr16)
-# --> parl16 (shp + as16)
-# --> turnout16 (shp + pr16_total)
-# --> pres06_15 (shp + pr_votes_06_15)
-# --> parl06_15 (shp + as_votes_06_15)
-# --> turnout_06_15 (shp + pr_votes_total_06_15)
+    # --> zmb16 (shapefile for 2016)
+    # --> pres16 (shp + pr16)
+    # --> parl16 (shp + as16)
+    # --> turnout16 (shp + pr16_total)
+    # --> pres06_15 (shp + pr_votes_06_15)
+    # --> parl06_15 (shp + as_votes_06_15)
+    # --> turnout_06_15 (shp + pr_votes_total_06_15)
 
 
 # setup -------------------------------------------------------------------
@@ -101,11 +101,25 @@ pr_turnout = bind_rows(pr16_total, pr_turnout_06_15)
 
 
 # [3 & 4] combine assembly data: constituency level breakdowns -----------------------------------------------
+source('ZMB_E08_assembly2016_clean.R')
+source('ZMB_E09_assembly2011_clean.R')
 
 # merge to colors ---------------------------------------------------------
 as06 = as06 %>% left_join(parties, by = c('party' = 'pres2006'))
 as11 = as11 %>% left_join(parties, by = c('party' = 'pres2011'))
 as16 = as16 %>% left_join(parties, by = c('party' = 'pres2016'))
+
+# bind together data
+
+as_votes_06_11 = bind_rows(as11, as06)
+as_votes = bind_rows(as16, as_votes_06_11)
+
+
+
+# bind together data -- turnout numbers
+as_turnout_06_11 = bind_rows(as11_total, as06_total)
+pr_turnout = bind_rows(as16_total, as_turnout_06_11)
+
 
 # [5] merge to geodata --------------------------------------------------------
 source('ZMB_E02_import_geo.R')
