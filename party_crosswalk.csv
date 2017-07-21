@@ -1,21 +1,39 @@
 party_name,pres2006,pres2008,pres2011,pres2015,pres2016,category10,color,human_color,order,num_seats
-Patriotic Front,PF,PF,PF,PF,PF,1f77b4,#1f77b4,blue,1,140
-UPND,"UPND, FDD, UNIP (UDA)",UPND,UPND,UPND,UPND,ff7f0e,#ff7f0e,orange,2,86
-MMD,MMD,MMD,MMD,MMD,MMD,17becf,#17becf,teal,3,57
-Independent,Independent,,IND,,IND,,,,,17
-FDD,,,FDD,FDD,FDD,2ca02c,#2ca02c,green,4,2
-ADD,,,ADD,,,7f7f7f,#7f7f7f,grey,5,1
+Patriotic Front,PF,PF,PF,PF,PF,1f77b4,#1f77b4,blue,1,183
+MMD,MMD,MMD,MMD,MMD,MMD,17becf,#17becf,teal,3,129
+UPND,"UPND, FDD, UNIP (UDA)",UPND,UPND,UPND,UPND,ff7f0e,#ff7f0e,orange,2,198
+UPND,UPND,UPND,UPND,UPND,UPND,ff7f0e,#ff7f0e,orange,2,198
+Independent,Independent,,IND,,IND,2ca02c,#2ca02c,green,,20
+ULP,ULP,,ULP,,,d62728,#d62728,red,,3
+FDD,FDD,,FDD,FDD,FDD,9467bd,#9467bd,purple,4,2
+ADD,,,ADD,,ADD,8c564b,#8c564b,brown,5,1
+NDF,NDF,,,,,e377c2,#e377c2,pink,,1
+unknown,unknown,unknown,unknown,unknown,unknown,bcbd22,#bcbd22,chartreuse,,1
 4R,,,,4R,,7f7f7f,#7f7f7f,grey,,
-CDP,,,,CDP,,7f7f7f,#7f7f7f,grey,,
+APC,APC,,APC,,,7f7f7f,#7f7f7f,grey,,
+CDP,,,CDP,CDP,,7f7f7f,#7f7f7f,grey,,
 DA,,,,,DA,7f7f7f,#7f7f7f,grey,,
-FDA,,,,FDA,,7f7f7f,#7f7f7f,grey,,
-Green Party,,,,GREENS,GREENS,9467bd,#9467bd,purple,,
-Heritage Party,HP,HERITAGE,HERITAGE,HERITAGE,,8c564b,#8c564b,brown,,
-NAREP,,,NAREP,NAREP,,17becf,#17becf,teal,,
+DDM,DDM,,,,,7f7f7f,#7f7f7f,grey,,
+FDA,,,,FDA,NA,7f7f7f,#7f7f7f,grey,,
+FEDEPA,FEDEPA,,FEDEPA,,,7f7f7f,#7f7f7f,grey,,
+GOP,,,,,GOP,7f7f7f,#7f7f7f,grey,,
+Green Party,,,,GREENS,GREENS,7f7f7f,#7f7f7f,grey,,
+Heritage Party,Heritage,HERITAGE,HERITAGE,HERITAGE,,7f7f7f,#7f7f7f,grey,,
+Heritage Party,HP,HERITAGE,HERITAGE,HERITAGE,,7f7f7f,#7f7f7f,grey,,
+NAREP,,,NAREP,NAREP,NAREP,7f7f7f,#7f7f7f,grey,,
+NGP,NGP,,NGP,,,7f7f7f,#7f7f7f,grey,,
 NMP,,,NMP,,,7f7f7f,#7f7f7f,grey,,
+NP,,,NP,,,7f7f7f,#7f7f7f,grey,,
+NRP,,,NRP,,,7f7f7f,#7f7f7f,grey,,
 PAC,,,,,PAC,7f7f7f,#7f7f7f,grey,,
-Rainbow Party,,,,,RAINBOW,7f7f7f,#7f7f7f,grey,,
-UNIP,,,UNIP,UNIP,UNIP,d62728,#d62728,red,6,
+PUDD,PUDD,,,,,7f7f7f,#7f7f7f,grey,,
+Rainbow Party,RP,,,,RAINBOW,7f7f7f,#7f7f7f,grey,,
+RRP,,,,,RRP,7f7f7f,#7f7f7f,grey,,
+UDF,,,,,UDF,7f7f7f,#7f7f7f,grey,,
+UNIP,,,UNIP,UNIP,UNIP,7f7f7f,#7f7f7f,grey,6,
+UPDD,,,UPDD,,,7f7f7f,#7f7f7f,grey,,
 UPP,,,,,UPP,7f7f7f,#7f7f7f,grey,,
 ZAD,,,ZED,,,7f7f7f,#7f7f7f,grey,,
-APC,APC,,,,,7f7f7f,#7f7f7f,grey,,
+ZCP,ZCP,,ZCP,,,7f7f7f,#7f7f7f,grey,,
+ZDDM,,,ZDDM,,,7f7f7f,#7f7f7f,grey,,
+ZED,,,ZED,,,7f7f7f,#7f7f7f,grey,,
