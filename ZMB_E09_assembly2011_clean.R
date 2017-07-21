@@ -6,7 +6,7 @@
 
 
 # KNOWN ISSUES ------------------------------------------------------------
-# 1. 2 constituencies are missing data; assume they didn't have elections in 2011
+# 1. 2 constituencies are missing data; assume they didn't have elections in 2011 (Magoye, Nakonde)
 # 2. Chawama candidate MUSONDAMWAUME Borniface K lacks info on party affiliation
 # 3. Nalikawana candidate LUNGWANGWA Lungwangwa G lacks party affiliation.  
 #       Initally assumed to be UPND: https://www.elections.org.zm/candidates/2016_national_assembly_elections/candidate/lungwangwa,lungwangwa,upnd
