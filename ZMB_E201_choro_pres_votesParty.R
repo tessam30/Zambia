@@ -2,9 +2,11 @@
 # In previous files, election data from Zambian elections were imported
 # cleaned, and merged.
 
-# This file plots 2 figures:
+# This file plots 4 figures:
 # [1] choropleths of % each party won, by constituency, by year, for presidential elections
-# [2] legend for choropleth
+# [2] choropleths of % each party won, by constituency, by year, for parliamentary elections
+# [3] choropleths of which party won, by constituency, by year, for parliamentary elections
+# [4] legend for choropleth
 
 # Laura Hughes, lhughes@usaid.gov, USAID | GeoCenter, 7 July 2017
 
@@ -62,8 +64,8 @@ plot_votes = function(geo_df, sel_year, party_tot,
     mutate(vote_cat = cut(pct_votes, breaks = pct_breaks)) 
   
   # reorder levels: arrange by the most recent election results
-  geo_df$party = forcats::fct_relevel(geo_df$party, pty_order)
-  party_tot$party = forcats::fct_relevel(party_tot$party, pty_order)
+  geo_df$party_name = forcats::fct_relevel(geo_df$party_name, pty_order)
+  party_tot$party_name = forcats::fct_relevel(party_tot$party_name, pty_order)
   
   # sort years from most recent to least
   geo_df$year = fct_rev(factor(geo_df$year))
@@ -74,7 +76,7 @@ plot_votes = function(geo_df, sel_year, party_tot,
     geom_text(aes(x = x_annot, y = y_annot, label = pct_lab, colour = color), 
               size = size_annot, alpha = 0.75,
               family = 'Lato Black',
-              data = party_tot %>% filter(party %in% party_order)) +
+              data = party_tot %>% filter(party_name %in% party_order)) +
     
     # -- choropleth --
     geom_sf(aes(fill = color, alpha = vote_cat), size = 0.1) +
@@ -84,7 +86,7 @@ plot_votes = function(geo_df, sel_year, party_tot,
     scale_fill_identity() +
     
     # -- facets --
-    facet_wrap(~year + party, ncol = 3) +
+    facet_wrap(~year + party_name, ncol = 3) +
     
     # -- themes --
     theme_facet(facet_size = 16) 
@@ -99,12 +101,58 @@ plot_votes = function(geo_df, sel_year, party_tot,
 
 # [1] PRESIDENTIAL DATA ---------------------------------------------------
 # plot for each year
-p16 = plot_votes(pres16, 2016, party_tot %>% filter(year == 2016))
-p06_15 = plot_votes(pres_06_15, '2006-2015', party_tot %>% filter(year != 2016))
+p16 = plot_votes(pres16, 2016, pres_tot %>% filter(year == 2016))
+p06_15 = plot_votes(pres_06_15, '2006-2015', pres_tot %>% filter(year != 2016))
+
+# [2] PARLIAMENTARY DATA ---------------------------------------------------
+# plot for each year
+a16 = plot_votes(parl16, 2016, parl_tot %>% filter(year == 2016), elec_type = 'parl')
+a06_11 = plot_votes(parl_06_11, '2006-2015', parl_tot %>% filter(year != 2016), elec_type = 'parl')
 
 
+# [3] PARLIAMENTARY WINNERS -----------------------------------------------
 
-# [2] plot legend -------------------------------------------------------------
+plot_winners = function(geo_df, sel_year, 
+                      yr_order = year_order,
+                      width = 12, height = 12) {
+  
+  # geodata frame, complete with voting results by party/constituency merged in
+  geo_df = geo_df %>%
+    # filter out; include only winners
+    filter(won == 1)
+  
+  
+  # sort years from most recent to least
+  geo_df$year = fct_rev(factor(geo_df$year))
+  
+  p = ggplot(geo_df) +
+
+        # -- choropleth --
+    geom_sf(aes(fill = color), size = 0.1) +
+    
+    # -- scales -- 
+    scale_color_identity() +
+    scale_fill_identity() +
+    
+    # -- facets --
+    facet_wrap(~year, ncol = 3) +
+    
+    # -- themes --
+    theme_facet(facet_size = 16) 
+  
+  
+  
+  ggsave(paste0(export_dir, 'ZMB_parl_winners', sel_year, '_party.pdf'),
+         width = width, height = height)
+  
+  return(p)
+}
+
+
+w16 = plot_winners(parl16, 2016)
+w06_11 = plot_winners(parl_06_11, '2006-2015')
+
+# [4] plot legend -------------------------------------------------------------
 colors = parties %>% select(party = party_name, color) %>% distinct() 
 
 lgnd = data.frame(color = rep(colors$color, length(pct_breaks)),
@@ -132,7 +180,7 @@ ggplot(lgnd, aes(x = vote_cat, y = 1, label = pct*100,
   scale_fill_identity() +
   
   # -- facets --
-  facet_wrap(~party, ncol = 2) +
+  facet_wrap(~party_name, ncol = 2) +
   
   # -- theme -- 
   theme_facet()

@@ -21,7 +21,7 @@ total_byparty = function(df) {
     mutate(party_grp = ifelse(party %in% maj_parties, party, 'other')) %>% 
     
     # group by party
-    group_by(party_grp, year) %>% 
+    group_by(party_grp, year, color) %>% 
     
     # calculate total # votes by party
     summarise(total = sum(vote_count)) %>% 
