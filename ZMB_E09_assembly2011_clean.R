@@ -119,7 +119,11 @@ as11 = as11 %>%
   # remove cols that are only available in the turnout, sumamry lines
   select(-cast, -registered, -rejected, -turnout_web, -total_registered, -pct_rejected_web) %>% 
   merge_turnout(as11_total) %>% 
-  calc_stats()
+  calc_stats() %>% 
+  mutate(
+    # fix party if unknown
+    party = ifelse(is.na(party), 'unknown', party)
+  )
 
 
 # checks ------------------------------------------------------------------
