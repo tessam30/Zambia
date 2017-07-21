@@ -36,7 +36,7 @@ height = 10
 
 # filter just parties with larger vote counts
 # order for plotting the parties
-party_order = c('PF', 'UPND', 'UPND, FDD, UNIP (UDA)', 'MMD')
+party_order = c('PF', 'Patriotic Front', 'UPND', 'UPND, FDD, UNIP (UDA)', 'MMD')
 # , 'FDD', 'ADD', 'UNIP')
 
 # import data -------------------------------------------------------------
@@ -44,10 +44,10 @@ party_order = c('PF', 'UPND', 'UPND, FDD, UNIP (UDA)', 'MMD')
 # source('ZMB_E00_mergeAll.R')
 
 # calculate summary statistics: pct each party won nationally each year
-# source('ZMB_E101_calcpct_byparty.R')
+source('ZMB_E101_calcpct_byparty.R')
 
 # themes (for ggplot funcs)
-# source('ZMB_E200_themes.R')
+source('ZMB_E200_themes.R')
 
 # main choropleth plot function -------------------------------------------
 # NOTE: can't simply facet over year and party, b/c can't join to a single shapefile.
@@ -61,8 +61,8 @@ plot_votes = function(geo_df, sel_year, party_tot,
   # geodata frame, complete with voting results by party/constituency merged in
   geo_df = geo_df %>%
     # filter out 
-    filter(party %in% party_order) %>% 
-    mutate(vote_cat = cut(pct_votes, breaks = pct_breaks)) 
+    filter(party_name %in% party_order) %>% 
+    mutate(vote_cat = cut(pct_cast, breaks = pct_breaks)) 
   
   # reorder levels: arrange by the most recent election results
   geo_df$party_name = forcats::fct_relevel(geo_df$party_name, pty_order)
@@ -114,26 +114,26 @@ a06_11 = plot_votes(parl_06_11, '2006-2015', parl_tot %>% filter(year != 2016), 
 # [3] PARLIAMENTARY WINNERS -----------------------------------------------
 
 plot_winners = function(geo_df, sel_year, 
-                      yr_order = year_order,
-                      width = 12, height = 12) {
+                        yr_order = year_order,
+                        width = 12, height = 12) {
   
   # geodata frame, complete with voting results by party/constituency merged in
   geo_df = geo_df %>%
-    # filter out; include only winners
-    filter(won == 1)
+    # filter out; include only winners (or NAs for constituencies w/o elections)
+    filter(is.na(won) | won == 1)
   
   
   # sort years from most recent to least
   geo_df$year = fct_rev(factor(geo_df$year))
   
   p = ggplot(geo_df) +
-
-        # -- choropleth --
+    
+    # -- choropleth --
     geom_sf(aes(fill = color), size = 0.1, alpha = 0.7) +
     
     # -- scales -- 
     scale_color_identity() +
-    scale_fill_identity() +
+    scale_fill_identity(na.value = grey25K) +
     
     # -- facets --
     facet_wrap(~year, ncol = 3) +
@@ -155,10 +155,10 @@ w06_11 = plot_winners(parl_06_11, '2006-2015')
 
 
 # [4] Parliamentary winners bar graph -------------------------------------
-party_order = c('unknown', 'ADD', 'FDD', 'NDF', 'ULP', 'Independent', 'MMD', 'UPND', 'Patriotic Front')
-  
-ggplot(as_winners, aes(y = n, x = fct_relevel(party_name, party_order),
-                    color = color, fill = color)) +
+pty_order = c('unknown', 'ADD', 'FDD', 'NDF', 'ULP', 'Independent', 'MMD', 'UPND', 'Patriotic Front')
+
+ggplot(as_winners, aes(y = n, x = fct_relevel(party_name, pty_order),
+                       color = color, fill = color)) +
   geom_bar(stat = 'identity', alpha = 0.5, size = 0.25) +
   facet_wrap(~ year) +
   coord_flip() + 
