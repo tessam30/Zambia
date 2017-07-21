@@ -6,7 +6,8 @@
 # [1] choropleths of % each party won, by constituency, by year, for presidential elections
 # [2] choropleths of % each party won, by constituency, by year, for parliamentary elections
 # [3] choropleths of which party won, by constituency, by year, for parliamentary elections
-# [4] legend for choropleth
+# [4] bar graph of number of parliamentary winners
+# [5] legend for choropleths
 
 # Laura Hughes, lhughes@usaid.gov, USAID | GeoCenter, 7 July 2017
 
@@ -128,7 +129,7 @@ plot_winners = function(geo_df, sel_year,
   p = ggplot(geo_df) +
 
         # -- choropleth --
-    geom_sf(aes(fill = color), size = 0.1) +
+    geom_sf(aes(fill = color), size = 0.1, alpha = 0.7) +
     
     # -- scales -- 
     scale_color_identity() +
@@ -152,7 +153,23 @@ plot_winners = function(geo_df, sel_year,
 w16 = plot_winners(parl16, 2016)
 w06_11 = plot_winners(parl_06_11, '2006-2015')
 
-# [4] plot legend -------------------------------------------------------------
+
+# [4] Parliamentary winners bar graph -------------------------------------
+party_order = c('unknown', 'ADD', 'FDD', 'NDF', 'ULP', 'Independent', 'MMD', 'UPND', 'Patriotic Front')
+  
+ggplot(as_winners, aes(y = n, x = fct_relevel(party_name, party_order),
+                    color = color, fill = color)) +
+  geom_bar(stat = 'identity', alpha = 0.5, size = 0.25) +
+  facet_wrap(~ year) +
+  coord_flip() + 
+  scale_fill_identity() + 
+  scale_color_identity() + 
+  ylab('number of representatives') +
+  theme_xgrid()
+
+ggsave(paste0(export_dir, 'ZMB_parl_seats.pdf'), width = width, height = height/3)
+
+# [5] plot legend -------------------------------------------------------------
 colors = parties %>% select(party = party_name, color) %>% distinct() 
 
 lgnd = data.frame(color = rep(colors$color, length(pct_breaks)),
