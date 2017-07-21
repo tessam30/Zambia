@@ -14,11 +14,11 @@ as_affil = as_votes %>%
   mutate(candidID = dense_rank(paste(candidate, constituency))) %>% 
   group_by(candidID) %>% 
   mutate(num_elections = n(),
-         partyChg = lead(party) != party) %>% 
+         partyChg = lead(party_name) != party_name) %>% 
   fill(partyChg) %>% 
   ungroup() %>% 
   filter(num_elections > 1) %>% 
-  group_by(party) %>% 
+  group_by(party_name) %>% 
   mutate(party_ct = n())
 
 pr_votes = pr_votes
@@ -28,7 +28,7 @@ affil = pr_votes %>%
   spread(year, party) %>% 
   mutate(partyChg = `2016` == `2011`)
 
-ggplot(as_affil, aes(x = year, y = fct_reorder(party, party_ct),
+ggplot(as_affil, aes(x = year, y = fct_reorder(party_name, party_ct),
                      color = partyChg, group = candidID)) +
   geom_line(size = 3, alpha = 0.2) +
   scale_color_manual(values = c('lightblue', 'orange')) +
