@@ -83,7 +83,8 @@ as06 = as06_raw %>%
          constituency = ifelse(constituency %like% 'Shiwang', "Shiwang'andu", constituency),
          candid = ifelse(shiftFlag == 0, col4, col5),
          isCandidate = ifelse(is.na(candid), 0, 1), # tag value as being total or candidate
-         party = ifelse(shiftFlag == 0, col5, col6),
+         party = ifelse(shiftFlag == 0, str_replace_all(str_replace_all(col5, "   ",  " "), "  ", " "), 
+                        str_replace_all(str_replace_all(col6, "   ",  " "), "  ", " ")),
          vote_count = ifelse(shiftFlag == 0, str2num(col6), str2num(col7)),
          rejected =  ifelse(shiftFlag == 0, str2num(col7), str2num(col8)),
          cast = ifelse(shiftFlag == 0, str2num(col8), str2num(col9)),
