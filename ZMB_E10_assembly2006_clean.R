@@ -85,6 +85,12 @@ as06 = as06_raw %>%
          isCandidate = ifelse(is.na(candid), 0, 1), # tag value as being total or candidate
          party = ifelse(shiftFlag == 0, str_replace_all(str_replace_all(col5, "   ",  " "), "  ", " "), 
                         str_replace_all(str_replace_all(col6, "   ",  " "), "  ", " ")),
+         
+         # fix party to match with other 2006 values.
+         # 1 UPND party; converted to UPND, FDD, UNIP (UDA)
+         # All Heritage converted to HP to match w/ 2006 presidential data
+         party = ifelse(party == 'UPND', 'UPND, FDD, UNIP (UDA)',
+                        ifelse(party == 'Heritage', 'HP', party)),
          vote_count = ifelse(shiftFlag == 0, str2num(col6), str2num(col7)),
          rejected =  ifelse(shiftFlag == 0, str2num(col7), str2num(col8)),
          cast = ifelse(shiftFlag == 0, str2num(col8), str2num(col9)),
