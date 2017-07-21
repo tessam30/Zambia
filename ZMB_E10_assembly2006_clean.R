@@ -77,10 +77,10 @@ as06 = as06_raw %>%
   mutate(year = 2006, 
          province = ifelse(shiftFlag == 0, pretty_strings(col1), pretty_strings(col2)),
          district = ifelse(shiftFlag == 0, pretty_strings(col2), pretty_strings(col3)),
-         constituency = ifelse(shiftFlag == 0, pretty_strings(str_replace_all(col3, '[0-9]', '')), 
+         website2006 = ifelse(shiftFlag == 0, pretty_strings(str_replace_all(col3, '[0-9]', '')), 
                                pretty_strings(str_replace_all(col4, '[0-9]', ''))),
          # fix Shiwang'andu's obno curly quote
-         constituency = ifelse(constituency %like% 'Shiwang', "Shiwang'andu", constituency),
+         website2006 = ifelse(website2006 %like% 'Shiwang', "Shiwang'andu", website2006),
          candid = ifelse(shiftFlag == 0, col4, col5),
          isCandidate = ifelse(is.na(candid), 0, 1), # tag value as being total or candidate
          party = ifelse(shiftFlag == 0, str_replace_all(str_replace_all(col5, "   ",  " "), "  ", " "), 
@@ -99,11 +99,13 @@ as06 = as06_raw %>%
   # fill down provinces, districts, constituencies
   fill(province) %>% 
   fill(district) %>% 
-  fill(constituency) %>% 
+  fill(website2006) %>% 
   # split apart candidate names
   split_candid('candid') %>% 
   # filter out the last of the rando data
-  filter(!is.na(vote_count)) 
+  filter(!is.na(vote_count)) %>% 
+  # merge in geo data
+  left_join(geo_base %>% select(constituency, website2006), by = 'website2006')
 
 # Side note: count unique constituencies that held elections.
 # Verified that there should be all 150 constituencies.
