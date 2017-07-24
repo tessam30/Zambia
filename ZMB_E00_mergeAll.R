@@ -124,6 +124,7 @@ bind_zeroVals = function(votes, shp) {
   cons = shp %>% pull(constituency)
   # get all unique years
   yrs = votes %>% distinct(year) %>% pull()
+  
   # replicate each constituency by each year
   cons = data.frame(year = rep(yrs, length(cons)), constituency = rep(cons, each = length(yrs)))
   
@@ -157,21 +158,25 @@ mutate(vote_count = ifelse(year == 2006 & constituency == 'Lupososhi', NA, vote_
        pct_cast = ifelse(year == 2006 & constituency == 'Lupososhi', NA, pct_cast),
        pct_votes = ifelse(year == 2006 & constituency == 'Lupososhi', NA, pct_votes),
        color = ifelse(year == 2006 & constituency == 'Lupososhi', na_color, color),
+       won = ifelse(year == 2006 & constituency == 'Lupososhi', -1, won),
        
        vote_count = ifelse(year == 2006 & constituency == 'Manyinga', NA, vote_count),
        pct_cast = ifelse(year == 2006 & constituency == 'Manyinga', NA, pct_cast),
        pct_votes = ifelse(year == 2006 & constituency == 'Manyinga', NA, pct_votes),
        color = ifelse(year == 2006 & constituency == 'Manyinga', na_color, color),
+       won = ifelse(year == 2006 & constituency == 'Manyinga', -1, won),
        
        vote_count = ifelse(year == 2011 & constituency == 'Nakonde', NA, vote_count),
        pct_cast = ifelse(year == 2011 & constituency == 'Nakonde', NA, pct_cast),
        pct_votes = ifelse(year == 2011 & constituency == 'Nakonde', NA, pct_votes),
        color = ifelse(year == 2011 & constituency == 'Nakonde', na_color, color),
+       won = ifelse(year == 2011 & constituency == 'Nakonde', -1, won),
        
        vote_count = ifelse(year == 2011 & constituency == 'Magoye', NA, vote_count),
        pct_cast = ifelse(year == 2011 & constituency == 'Magoye', NA, pct_cast),
        pct_votes = ifelse(year == 2011 & constituency == 'Magoye', NA, pct_votes),
-       color = ifelse(year == 2011 & constituency == 'Magoye', na_color, color))
+       color = ifelse(year == 2011 & constituency == 'Magoye', na_color, color),
+       won = ifelse(year == 2011 & constituency == 'Magoye', -1, won))
 
 as16 = bind_zeroVals(as16, zmb16)
 
@@ -188,7 +193,7 @@ as_turnout = bind_rows(as16_total, as_turnout_06_11)
 
 # 2016 data required to be merged to 2016 shapefile
 pres16 = full_join(zmb16, pr16, by = c("constituency" = "constituency", "province" = "province", "district2016" = "district"))
-parl16 = full_join(zmb16, as16, by = c("constituency" = "constituency", "province" = "province", "district2016" = "district"))
+parl16 = full_join(zmb16, as16, by = c("constituency" = "constituency"))
 
 turnout16 = full_join(zmb16, pr16_total, by = c("constituency" = "constituency", "province" = "province", "district2016" = "district"))
 

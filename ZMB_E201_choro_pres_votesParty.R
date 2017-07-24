@@ -119,8 +119,8 @@ plot_winners = function(geo_df, sel_year,
   
   # geodata frame, complete with voting results by party/constituency merged in
   geo_df = geo_df %>%
-    # filter out; include only winners (or NAs for constituencies w/o elections)
-    filter(is.na(won) | won == 1)
+    # filter out; include only winners (or -1 for constituencies w/o elections)
+    filter(won %in% c(1, -1))
   
   
   # sort years from most recent to least
@@ -155,7 +155,7 @@ w06_11 = plot_winners(parl_06_11, '2006-2015')
 
 
 # [4] Parliamentary winners bar graph -------------------------------------
-pty_order = c('unknown', 'ADD', 'FDD', 'NDF', 'ULP', 'Independent', 'MMD', 'UPND', 'Patriotic Front')
+pty_order = c('unknown', 'ADD', 'FDD', 'NDF', 'ULP', 'Independent', 'UPND', 'Patriotic Front', 'MMD')
 
 ggplot(as_winners, aes(y = n, x = fct_relevel(party_name, pty_order),
                        color = color, fill = color)) +
@@ -163,11 +163,12 @@ ggplot(as_winners, aes(y = n, x = fct_relevel(party_name, pty_order),
   facet_wrap(~ year) +
   coord_flip() + 
   scale_fill_identity() + 
+  scale_y_reverse() +
   scale_color_identity() + 
   ylab('number of representatives') +
   theme_xgrid()
 
-ggsave(paste0(export_dir, 'ZMB_parl_seats.pdf'), width = width, height = height/3)
+ggsave(paste0(export_dir, 'ZMB_parl_seats.pdf'), width = width, height = height/5)
 
 # [5] plot legend -------------------------------------------------------------
 colors = parties %>% select(party = party_name, color) %>% distinct() 

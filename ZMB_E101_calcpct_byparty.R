@@ -9,12 +9,12 @@
 # source('ZMB_pres_mergeAll.R')
 
 
-maj_parties = c('PF', 'UPND', 'UPND, FDD, UNIP (UDA)', 'MMD')
+maj_parties = c('Patriotic Front', 'UPND', 'UPND, FDD, UNIP (UDA)', 'MMD')
 
 
 # Presidential elections, 2006-2016. --------------------------------------
 
-total_byparty = function(df) {
+total_byparty = function(df, parties) {
   
   # total number of votes cast. duplicated across all political parties, 
   # so selecting unique total cast per constituency and adding
@@ -27,33 +27,36 @@ total_byparty = function(df) {
   
   df %>% 
     # lump parties getting few votes into "other" category
-    mutate(party_grp = ifelse(party %in% maj_parties, party, 'other')) %>% 
+    mutate(party_grp = ifelse(party_name %in% maj_parties, party_name, 'other')) %>% 
     
     # group by party
-    group_by(party_grp, party_name, year, color) %>% 
+    group_by(party_grp, year) %>% 
     
     # calculate total # votes by party
-    summarise(total = sum(vote_count)) %>% 
+    summarise(total = sum(vote_count, na.rm = TRUE)) %>% 
     
     # calculate percent of the total, national party
     ungroup() %>% 
     left_join(cast_total, by = 'year') %>% 
     group_by(year) %>% 
-    mutate(pct_valid = total/sum(total),
+    mutate(pct_valid = total/sum(total, na.rm = TRUE),
            pct = total / cast_total,
            pct_lab = percent(pct, 0)) %>% 
-    arrange(desc(total))
+    arrange(desc(total)) %>% 
+    rename(party_name = party_grp) %>% 
+    left_join(parties %>% select(party_name, color), by = 'party_name')
 }
 
-pres_tot = pr_votes %>% total_byparty()
+pres_tot = pr_votes %>% total_byparty(parties)
 # export
 write_csv(pres_tot, paste0(data_dir, 'ZMB_presvotes_byparty.csv'))
 
 # Assembly elections ------------------------------------------------------
 
 
-parl_tot = as_votes %>% total_byparty()
+parl_tot = as_votes %>% total_byparty(parties)
 
+# Count who won the parliamentary elections.
 as_winners = as_votes %>% 
   filter(won == 1) %>% 
   count(party_name, color, year) %>% 
