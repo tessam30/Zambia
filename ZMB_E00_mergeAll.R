@@ -203,3 +203,41 @@ parl_06_11 = full_join(zmb15, as_votes_06_11, by = c("constituency"))
 
 turnout_06_15 = full_join(zmb15, pr_turnout_06_15, by = c("constituency"))
 
+
+# export data -------------------------------------------------------------
+# export maps
+z15 = zmb15 %>% select(id, province, prov06 = province2006, prov15 = province2015, district = district2016, 
+                       dist06 = district2006, dist15 = district2015, constit = constituency, geometry)
+st_write(z15, dsn = 'ZMB_constituencies_pre2016.shp', driver = "ESRI Shapefile")
+
+z16 = zmb16 %>% select(id, province, district = district2016, 
+                       constit = constituency, geometry)
+st_write(z16, dsn = 'ZMB_constituencies_2016.shp', driver = "ESRI Shapefile")
+         
+# export turnout
+turnout_export16 = bind_rows(as16_total %>% mutate(election_type = 'parliamentary'),
+                          pr16_total %>% mutate(election_type = 'presidential')) %>% 
+  select(constit = constituency, election_type, year, turnout, pct_rejected)
+
+write.csv(turnout_export16, paste0(data_dir, 'turnout2016.csv'))
+
+
+turnout_export15 = bind_rows(as_turnout_06_11 %>% mutate(election_type = 'parliamentary'),
+                             pr_turnout_06_15 %>% mutate(election_type = 'presidential')) %>% 
+  select(constit = constituency, election_type, year, turnout, pct_rejected)
+
+write.csv(turnout_export15, paste0(data_dir, 'turnout2006_2015.csv'))
+
+
+# export percent won per party
+parties_export16 = bind_rows(as16 %>% mutate(election_type = 'parliamentary'),
+                             pr16 %>% mutate(election_type = 'presidential')) %>% 
+  select(constit = constituency, election_type, year, party = party_name, candidate, pct_cast, won)
+
+write.csv(parties_export16, paste0(data_dir, 'parties2016.csv'))
+
+parties_export15 = bind_rows(as_votes_06_11 %>% mutate(election_type = 'parliamentary'),
+                             pr_votes_06_15 %>% mutate(election_type = 'presidential')) %>% 
+  select(constit = constituency, election_type, year, party = party_name, candidate, pct_cast, won)
+
+write.csv(parties_export15, paste0(data_dir, 'parties2006_2015.csv'))
