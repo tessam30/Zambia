@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Zambian election results</title>
+  <script src='https://d3js.org/d3.v4.min.js'></script>
+</head>
+<body>
+
+<!-- <svg width="960" height="600" fill="none" stroke="#333">
+  <path id="municipalities" stroke-width="0.2"></path>
+  <path id="states"></path>
+</svg> -->
+
+<script>
+
+var width = 700,
+    height = 580;
+
+var svg = d3.select('body')
+  .append('svg')
+  .attr('width', width)
+  .attr('height', height);
+
+var g = svg.append('g');
+
+var albersProjection = d3.geoAlbers()
+  // .scale(190000)
+  // .rotate([71.057, 0])
+  // .center([0, 42.313])
+  // .translate([width/2, height/2]);
+
+
+
+function scale (scaleFactor) {
+     return d3.geoTransform({
+         point: function(x, y) {
+             this.stream.point(x / scaleFactor +350, -y  / scaleFactor + -450);
+         }
+     });
+ }
+
+ // path = d3.geoPath().projection(scale(2));
+ var geoPath = d3.geoPath()
+     .projection(scale(2e3))
+    //  .translate([width/2, height/2]);
+     // .center([0, 42.313])
+
+
+d3.json("data/pres_results.geojson", function(error, mx) {
+
+
+
+
+  if (error) throw error;
+
+  console.log(mx.features)
+  console.log(mx.features.properties)
+
+  g.selectAll('path')
+    .data(mx.features)
+    .enter()
+    .append('path')
+    .attr('stroke', '#ccc')
+    .attr('fill', '#ff0')
+    .attr('d', geoPath);
+
+  // var states = topojson.feature(mx, mx.objects.province),
+      // municipalities = topojson.feature(mx, mx.features.properties.province);
+
+  // projection.fitSize([960, 600], states);
+
+  // d3.select("#municipalities")
+  //     .data(mx.features)
+  //     .attr("d", path);
+
+
+});
+
+</script>
+</body>
+</html>
