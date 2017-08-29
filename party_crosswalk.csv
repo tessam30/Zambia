@@ -1,7 +1,7 @@
 party_name,pres2006,pres2008,pres2011,pres2015,pres2016,category10,color,human_color,order,num_seats
 Patriotic Front,PF,PF,PF,PF,PF,1f77b4,#1f77b4,blue,1,183
-MMD,MMD,MMD,MMD,MMD,MMD,17becf,#17becf,teal,3,129
-UPND,"UPND, FDD, UNIP (UDA)",UPND,UPND,UPND,UPND,ff7f0e,#ff7f0e,orange,2,198
+Movement for Multi-Party Democracy,MMD,MMD,MMD,MMD,MMD,17becf,#17becf,teal,3,129
+United Party for National Development,"UPND, FDD, UNIP (UDA)",UPND,UPND,UPND,UPND,ff7f0e,#ff7f0e,orange,2,198
 Independent,Independent,,IND,,IND,2ca02c,#2ca02c,green,,20
 ULP,ULP,,ULP,,,d62728,#d62728,red,,3
 FDD,FDD,,FDD,FDD,FDD,9467bd,#9467bd,purple,4,2
