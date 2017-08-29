@@ -50,8 +50,8 @@ geo_base = read_excel(paste0(base_dir, 'ZMB_admin_crosswalk.xlsx'), sheet = 2)
 setwd('geodata/constituencies/')
 
 # import data
-zmb15 = st_read(dsn = '.', layer = 'GRED_Zambia_2006_beta2')
-zmb16 = st_read(dsn = '.', layer = 'Zambia_Const_156')
+zmb15 = st_read(dsn = '.', layer = 'Zambia_Const_150_simpl')
+zmb16 = st_read(dsn = '.', layer = 'Zambia_Const_156_simpl')
 
 # fix "Shiwang\x92Andu" -- gives merging issues
 zmb15 = zmb15 %>% mutate(ConstName = ifelse(as.character(CST_N) %like% 
