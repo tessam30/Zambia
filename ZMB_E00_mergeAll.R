@@ -215,13 +215,13 @@ z16 = zmb16 %>% select(id, province, district = district2016,
 st_write(z16, dsn = 'ZMB_constituencies_2016.shp', driver = "ESRI Shapefile")
 
 z16 = pres16 %>% select(id, province, district = district2016, 
-                       constituency, geometry,
+                       constit = constituency, geometry,
                        year, party_name, candidate, pct_cast, rank, won, color)
 
 z15 = pres_06_15 %>% 
   mutate(province = ifelse(year == 2015, province2015, province2006),
          district = ifelse(year == 2015, district2015, district2006)) %>% 
-  select(id, province, district, constituency, geometry,
+  select(id, province, district, constit = constituency, geometry,
                         year, party_name, candidate, pct_cast, rank, won, color)
 
 
